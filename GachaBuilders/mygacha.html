@@ -1,0 +1,201 @@
+<html>
+<head>
+  <title>Hello WebAPI</title>
+  <style type="text/css">
+  .humanbtn{
+  position:fixed;
+  	top:0px;left:0px;
+  }
+  .headbtn{
+  position:fixed;
+  	top:0px;left:80px;
+  }
+  .accebtn{
+  position:fixed;
+  	top:0px;left:160px;
+  }
+  .swordbtn{
+  position:fixed;
+  	top:80px;left:0px;
+  }
+  .bodybtn{
+  position:fixed;
+  	top:80px;left:80px;
+  }
+  .shieldbtn{
+  position:fixed;
+  	top:80px;left:160px;
+  }
+  .footbtn{
+  position:fixed;
+  	top:160px;left:80px;
+  }
+  #descriptiontable{
+ 	position:fixed;
+  	top:0px;left:300px;
+   text-align: center;
+  }
+  #descriptiontable th{
+  background-color: #cccccc;
+  }
+  #descriptiontable th.textarea{
+  width : 80px;
+  }
+  .imgarea{
+  	width:30px;
+  	height:30px;
+  }
+  
+
+  </style>
+</head>
+<body>
+<table id="descriptiontable" border=1>
+<tr><th class="imgarea"></th><th class="textarea">Name</th><th class="textarea">HP</th><th class="textarea">ATK</th><th class="textarea">DEF</th><th class="textarea">SPD</th><th class="textarea">LUK</th><th class="textarea">EFFECT</th></tr>
+<tr>
+<td class="imgarea"><img id="humanresult" class="imgarea" src="res/human/onnnasouryo.png"></td><td><span id="humanname">無職</span></td><td><span id="humanhp">1</span></td><td><span id="humanatk">1</span></td><td><span id="humandef">1</span></td><td><span id="humanspd">1</span></td><td><span id="humanluk">1</span></td><td><span id="humaneffect">無し</span></td>
+</tr>
+<tr>
+<td class="imgarea"><img id="headresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+<tr>
+<td class="imgarea"><img id="acceresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+<tr>
+<td class="imgarea"><img id="bodyresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+<tr>
+<td class="imgarea"><img id="swordresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+<tr>
+<td class="imgarea"><img id="shieldresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+<tr>
+<td class="imgarea"><img id="footresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+
+</table>
+
+<form>
+	<button id="humanbtn" class="humanbtn" type="button" style="width:80px;height:80px">
+	<img id ="humanimg" class="humanbtn" src="res/human/onnnasouryo.png" width="80" height="80"></button>
+	
+	<button id="headbtn" class="headbtn" type="button"style="width:80px;height:80px">
+	<img id="headimg" class="headbtn" src="res/head.png" width="80" height="80"></button>
+	
+	<button id="accebtn" class="accebtn" type="button"style="width:80px;height:80px">
+	<img id ="acceimg" class="accebtn" src="res/human.png "width="80" height="80"></button>
+	
+	<button id="bodybtn" class="bodybtn" type="button"style="width:80px;height:80px">
+	<img id="bodyimg" class="bodybtn" src="res/head.png" width="80" height="80"></button>
+	
+	<button id="swordbtn" class="swordbtn" type="button"style="width:80px;height:80px">
+	<img id="swordimg" class="swordbtn" src="res/head.png" width="80" height="80"></button>
+	
+	<button id="shieldbtn" class="shieldbtn" type="button"style="width:80px;height:80px">
+	<img id ="shieldimg" class="shieldbtn" src="res/human.png "width="80" height="80"></button>
+	
+	<button id="footbtn" class="footbtn" type="button"style="width:80px;height:80px">
+	<img id ="footimg" class="footbtn" src="res/human.png "width="80" height="80"></button>
+</form>
+
+<script src="js/jquery-3.1.1.min.js"></script>
+<script>
+$(document).ready(function(){
+	$("#humanbtn").click(function(){
+		$.ajax({
+ 		   url: "../GachaBuildersHost/weaponGacha.php"
+       , dataType: "json"
+       , success: function( json ) {
+         resultTmp = "";
+           resultTmp += json["name"] + " " + json["HP"] +"<br>";
+           document.getElementById("humanimg").src = "../"+json['img'];
+           document.getElementById("humanresult").src = "../"+json['img'];
+
+           document.getElementById("humanname").innerHTML = json['name'];
+           document.getElementById("humanhp").innerHTML = json['HP'];
+           document.getElementById("humanatk").innerHTML = json['ATK'];
+           document.getElementById("humandef").innerHTML = json['DEF'];
+           document.getElementById("humanspd").innerHTML = json['SPD'];
+           document.getElementById("humanluk").innerHTML = json['LUK'];
+           document.getElementById("humaneffect").innerHTML = json['EFFECT'];
+      }
+  	});
+	});
+	$("#headbtn").click(function(){
+		$.ajax({
+ 		   url: "../GachaBuildersHost/weaponGacha.php"
+       , dataType: "json"
+       , success: function( json ) {
+         resultTmp = "";
+           resultTmp += json["name"] + " " + json["HP"] +"<br>";
+           document.getElementById("headimg").src = "../"+json['img'];
+           document.getElementById("headresult").src = "../"+json['img'];
+      }
+  	});
+	});
+	$("#accebtn").click(function(){
+		$.ajax({
+ 		   url: "../GachaBuildersHost/weaponGacha.php"
+       , dataType: "json"
+       , success: function( json ) {
+         resultTmp = "";
+           resultTmp += json["name"] + " " + json["HP"] +"<br>";
+           document.getElementById("acceimg").src = "../"+json['img'];
+           document.getElementById("acceresult").src = "../"+json['img'];
+      }
+  	});
+	});$("#bodybtn").click(function(){
+		$.ajax({
+ 		   url: "../GachaBuildersHost/weaponGacha.php"
+       , dataType: "json"
+       , success: function( json ) {
+         resultTmp = "";
+           resultTmp += json["name"] + " " + json["HP"] +"<br>";
+           document.getElementById("bodyimg").src = "../"+json['img'];
+           document.getElementById("bodyresult").src = "../"+json['img'];
+      }
+  	});
+	});
+	$("#swordbtn").click(function(){
+		$.ajax({
+ 		   url: "../GachaBuildersHost/weaponGacha.php"
+       , dataType: "json"
+       , success: function( json ) {
+         resultTmp = "";
+           resultTmp += json["name"] + " " + json["HP"] +"<br>";
+           document.getElementById("swordimg").src = "../"+json['img'];
+           document.getElementById("swordresult").src = "../"+json['img'];
+      }
+  	});
+	});
+	$("#shieldbtn").click(function(){
+		$.ajax({
+ 		   url: "../GachaBuildersHost/weaponGacha.php"
+       , dataType: "json"
+       , success: function( json ) {
+         resultTmp = "";
+           resultTmp += json["name"] + " " + json["HP"] +"<br>";
+           document.getElementById("shieldimg").src = "../"+json['img'];
+           document.getElementById("shieldresult").src = "../"+json['img'];
+      }
+  	});
+	});
+	$("#footbtn").click(function(){
+		$.ajax({
+ 		   url: "../GachaBuildersHost/weaponGacha.php"
+       , dataType: "json"
+       , success: function( json ) {
+         resultTmp = "";
+           resultTmp += json["name"] + " " + json["HP"] +"<br>";
+           document.getElementById("footimg").src = "../"+json['img'];
+           document.getElementById("footresult").src = "../"+json['img'];
+      }
+  	});
+	});
+});
+</script>
+
+</body>
+</html>
+
