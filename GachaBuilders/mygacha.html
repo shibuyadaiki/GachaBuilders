@@ -418,7 +418,7 @@ function CountUp(){
 setInterval(CountUp, 1000);
 
 var socket = io.connect();
-socket.on('GameStart'function(ret){
+socket.on('GameStart',function(ret){
 	gameStart = true;
 	if(GetCookie('data1') == ret[0]){
 	document.getElementById("enemyname").innerHTML = ret[1];
