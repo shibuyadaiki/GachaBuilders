@@ -1,201 +1,731 @@
 <html>
 <head>
+    名前を入力してください
+    <br>
+    <input type="text" name="name" value="" id="nameId">
+    <input type="submit" name="mode" id="gameStart" value="ゲームスタート！">
+  </form>
+  <script src="js/jquery-3.1.1.min.js"></script>
+  <script src="../GachaBuildersHost/node_modules/socket.io/lib/socket.js"></script>
+	<script>
+		$(document).ready(function(){
+			$("#gameStart").click(function(){
+				 var socket = io.connect();
+				 var value = $("#nameId").val();
+				var data = {
+					roomId : 0,
+					name : value
+				}
+        		socket.emit('EnterRoom',data);
+        		document.cookie = 'data1='+encodeURIComponent(value);
+      		});
+		});
+</script>
+
   <title>Hello WebAPI</title>
   <style type="text/css">
   .humanbtn{
   position:fixed;
-  	top:0px;left:0px;
+  	top:100px;left:0px;
   }
   .headbtn{
   position:fixed;
-  	top:0px;left:80px;
+  	top:100px;left:80px;
   }
   .accebtn{
   position:fixed;
-  	top:0px;left:160px;
+  	top:100px;left:160px;
   }
   .swordbtn{
   position:fixed;
-  	top:80px;left:0px;
+  	top:180px;left:0px;
   }
   .bodybtn{
   position:fixed;
-  	top:80px;left:80px;
+  	top:180px;left:80px;
   }
   .shieldbtn{
   position:fixed;
-  	top:80px;left:160px;
+  	top:180px;left:160px;
   }
   .footbtn{
   position:fixed;
-  	top:160px;left:80px;
+  	top:260px;left:80px;
   }
+
+  .enemyhumanbtn{
+  position:fixed;
+  	top:100px;left:960px;
+  }
+  .enemyheadbtn{
+  position:fixed;
+  	top:100px;left:1040px;
+  }
+  .enemyaccebtn{
+  position:fixed;
+  	top:100px;left:1120px;
+  }
+  .enemyswordbtn{
+  position:fixed;
+  	top:180px;left:960px;
+  }
+  .enemybodybtn{
+  position:fixed;
+  	top:180px;left:1040px;
+  }
+  .enemyshieldbtn{
+  position:fixed;
+  	top:180px;left:1120px;
+  }
+  .enemyfootbtn{
+  position:fixed;
+  	top:260px;left:1040px;
+  }
+
   #descriptiontable{
  	position:fixed;
-  	top:0px;left:300px;
+  	top:100px;left:300px;
    text-align: center;
+  }
+  #enemydescriptiontable{
+   	position:fixed;
+    	top:100px;right:0px;
+     text-align: center;
   }
   #descriptiontable th{
   background-color: #cccccc;
   }
   #descriptiontable th.textarea{
-  width : 80px;
+  width : 30px;
+  }
+  #descriptiontable th.namearea{
+  width : 60px;
+  }
+  #enemydescriptiontable th{
+  background-color: #cccccc;
+  }
+  #enemydescriptiontable th.textarea{
+  width : 30px;
+  }
+  #enemydescriptiontable th.namearea{
+  width : 60px;
   }
   .imgarea{
   	width:30px;
   	height:30px;
   }
-  
+  div.timer {
+	width: 300px;
+	height: 60px;
+	position: absolute;
+	top: 200px;
+	left: 730px;
+  }
+  div.timerEq {
+	width: 300px;
+	height: 60px;
+	position: absolute;
+	top: 200px;
+	left: 742px;
+  }
+  div.enemyname{
+   	position:fixed;
+    top:60px;right:0px;
+    text-align: center;
+  }
+  div.myname{
+   	position:fixed;
+    top:60px;left:0px;
+    text-align: center;
+  }
 
   </style>
 </head>
 <body>
-<table id="descriptiontable" border=1>
-<tr><th class="imgarea"></th><th class="textarea">Name</th><th class="textarea">HP</th><th class="textarea">ATK</th><th class="textarea">DEF</th><th class="textarea">SPD</th><th class="textarea">LUK</th><th class="textarea">EFFECT</th></tr>
-<tr>
-<td class="imgarea"><img id="humanresult" class="imgarea" src="res/human/onnnasouryo.png"></td><td><span id="humanname">無職</span></td><td><span id="humanhp">1</span></td><td><span id="humanatk">1</span></td><td><span id="humandef">1</span></td><td><span id="humanspd">1</span></td><td><span id="humanluk">1</span></td><td><span id="humaneffect">無し</span></td>
-</tr>
-<tr>
-<td class="imgarea"><img id="headresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-</tr>
-<tr>
-<td class="imgarea"><img id="acceresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-</tr>
-<tr>
-<td class="imgarea"><img id="bodyresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-</tr>
-<tr>
-<td class="imgarea"><img id="swordresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-</tr>
-<tr>
-<td class="imgarea"><img id="shieldresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-</tr>
-<tr>
-<td class="imgarea"><img id="footresult" class="imgarea" src="res/human.png"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-</tr>
 
+<div class="myname" id="myname" style="font-size:20pt;">名無し</div>
+<table id="descriptiontable" border=1>
+<tr>
+  <th class="imgarea"></th>
+  <th class="namearea">Name</th>
+  <th class="textarea">HP</th>
+  <th class="textarea">ATK</th>
+  <th class="textarea">DEF</th>
+  <th class="textarea">SPD</th>
+  <th class="textarea">LUK</th>
+  <th class="textarea">EFFECT</th>
+</tr>
+<tr>
+  <td class="imgarea"><img id="humanresult" class="imgarea" src="res/human/onnnasouryo.png"></td>
+  <td><span id="humanname">無職</span></td>
+  <td><span id="humanhp">1</span></td>
+  <td><span id="humanatk">1</span></td>
+  <td><span id="humandef">1</span></td>
+  <td><span id="humanspd">1</span></td>
+  <td><span id="humanluk">1</span></td>
+  <td><span id="humaneffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="headresult" class="imgarea" src="res/head/helm_001.png"></td>
+  <td><span id="headname">ただの帽子</span></td>
+  <td><span id="headhp">1</span></td>
+  <td><span id="headatk">1</span></td>
+  <td><span id="headdef">1</span></td>
+  <td><span id="headspd">1</span></td>
+  <td><span id="headluk">1</span></td>
+  <td><span id="headeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="acceresult" class="imgarea" src="res/acce/acce_002.png"></td>
+  <td><span id="accename">ただの腕輪</span></td>
+  <td><span id="accehp">1</span></td>
+  <td><span id="acceatk">1</span></td>
+  <td><span id="accedef">1</span></td>
+  <td><span id="accespd">1</span></td>
+  <td><span id="acceluk">1</span></td>
+  <td><span id="acceeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="bodyresult" class="imgarea" src="res/body/armor_001.png"></td>
+  <td><span id="bodyname">ただの洋服</span></td>
+  <td><span id="bodyhp">1</span></td>
+  <td><span id="bodyatk">1</span></td>
+  <td><span id="bodydef">1</span></td>
+  <td><span id="bodyspd">1</span></td>
+  <td><span id="bodyluk">1</span></td>
+  <td><span id="bodyeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="swordresult" class="imgarea" src="res/sword/we_sword001.png"></td>
+  <td><span id="swordname">ただの剣</span></td>
+  <td><span id="swordhp">1</span></td>
+  <td><span id="swordatk">1</span></td>
+  <td><span id="sworddef">1</span></td>
+  <td><span id="swordspd">1</span></td>
+  <td><span id="swordluk">1</span></td>
+  <td><span id="swordeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="shieldresult" class="imgarea" src="res/shield/shield_001b.png"></td>
+  <td><span id="shieldname">ただの盾</span></td>
+  <td><span id="shieldhp">1</span></td>
+  <td><span id="shieldatk">1</span></td>
+  <td><span id="shielddef">1</span></td>
+  <td><span id="shieldspd">1</span></td>
+  <td><span id="shieldluk">1</span></td>
+  <td><span id="shieldeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="footresult" class="imgarea" src="res/foot/boots_001.png"></td>
+  <td><span id="footname">ただの靴</span></td>
+  <td><span id="foothp">1</span></td>
+  <td><span id="footatk">1</span></td>
+  <td><span id="footdef">1</span></td>
+  <td><span id="footspd">1</span></td>
+  <td><span id="footluk">1</span></td>
+  <td><span id="footeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"></td>
+  <td><span id="totalname">合計</span></td>
+  <td><span id="totalhp">7</span></td>
+  <td><span id="totalatk">7</span></td>
+  <td><span id="totaldef">7</span></td>
+  <td><span id="totalspd">7</span></td>
+  <td><span id="totalluk">7</span></td>
+  <td><span id="totaleffect"></span></td>
+</tr>
 </table>
+
+<div class="enemyname" id="enemyname" style="font-size:20pt;">名無し</div>
+<table id="enemydescriptiontable" border=1>
+<tr>
+  <th class="imgarea"></th>
+  <th class="namearea">Name</th>
+  <th class="textarea">HP</th>
+  <th class="textarea">ATK</th>
+  <th class="textarea">DEF</th>
+  <th class="textarea">SPD</th>
+  <th class="textarea">LUK</th>
+  <th class="textarea">EFFECT</th>
+</tr>
+<tr>
+  <td class="imgarea"><img id="enemyhumanresult" class="imgarea" src="res/human/onnnasouryo.png"></td>
+  <td><span id="enemyhumanname">無職</span></td>
+  <td><span id="enemyhumanhp">1</span></td>
+  <td><span id="enemyhumanatk">1</span></td>
+  <td><span id="enemyhumandef">1</span></td>
+  <td><span id="enemyhumanspd">1</span></td>
+  <td><span id="enemyhumanluk">1</span></td>
+  <td><span id="enemyhumaneffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="enemyheadresult" class="imgarea" src="res/head/helm_001.png"></td>
+  <td><span id="enemyheadname">ただの帽子</span></td>
+  <td><span id="enemyheadhp">1</span></td>
+  <td><span id="enemyheadatk">1</span></td>
+  <td><span id="enemyheaddef">1</span></td>
+  <td><span id="enemyheadspd">1</span></td>
+  <td><span id="enemyheadluk">1</span></td>
+  <td><span id="enemyheadeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="enemyacceresult" class="imgarea" src="res/acce/acce_002.png"></td>
+  <td><span id="enemyaccename">ただの腕輪</span></td>
+  <td><span id="enemyaccehp">1</span></td>
+  <td><span id="enemyacceatk">1</span></td>
+  <td><span id="enemyaccedef">1</span></td>
+  <td><span id="enemyaccespd">1</span></td>
+  <td><span id="enemyacceluk">1</span></td>
+  <td><span id="enemyacceeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="enemybodyresult" class="imgarea" src="res/body/armor_001.png"></td>
+  <td><span id="enemybodyname">ただの洋服</span></td>
+  <td><span id="enemybodyhp">1</span></td>
+  <td><span id="enemybodyatk">1</span></td>
+  <td><span id="enemybodydef">1</span></td>
+  <td><span id="enemybodyspd">1</span></td>
+  <td><span id="enemybodyluk">1</span></td>
+  <td><span id="enemybodyeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="enemyswordresult" class="imgarea" src="res/sword/we_sword001.png"></td>
+  <td><span id="enemyswordname">ただの剣</span></td>
+  <td><span id="enemyswordhp">1</span></td>
+  <td><span id="enemyswordatk">1</span></td>
+  <td><span id="enemysworddef">1</span></td>
+  <td><span id="enemyswordspd">1</span></td>
+  <td><span id="enemyswordluk">1</span></td>
+  <td><span id="enemyswordeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="enemyshieldresult" class="imgarea" src="res/shield/shield_001b.png"></td>
+  <td><span id="enemyshieldname">ただの盾</span></td>
+  <td><span id="enemyshieldhp">1</span></td>
+  <td><span id="enemyshieldatk">1</span></td>
+  <td><span id="enemyshielddef">1</span></td>
+  <td><span id="enemyshieldspd">1</span></td>
+  <td><span id="enemyshieldluk">1</span></td>
+  <td><span id="enemyshieldeffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"><img id="enemyfootresult" class="imgarea" src="res/foot/boots_001.png"></td>
+  <td><span id="enemyfootname">ただの靴</span></td>
+  <td><span id="enemyfoothp">1</span></td>
+  <td><span id="enemyfootatk">1</span></td>
+  <td><span id="enemyfootdef">1</span></td>
+  <td><span id="enemyfootspd">1</span></td>
+  <td><span id="enemyfootluk">1</span></td>
+  <td><span id="enemyfooteffect">無し</span></td>
+</tr>
+<tr>
+  <td class="imgarea"></td>
+  <td><span id="enemytotalname">合計</span></td>
+  <td><span id="enemytotalhp">7</span></td>
+  <td><span id="enemytotalatk">7</span></td>
+  <td><span id="enemytotaldef">7</span></td>
+  <td><span id="enemytotalspd">7</span></td>
+  <td><span id="enemytotalluk">7</span></td>
+  <td><span id="enemytotaleffect"></span></td>
+</tr>
+</table>
+
+<div class="timerEq" style="font-size:20pt;">残り時間</div>
+<div class="timer" id="timer" style="font-size:100pt;">90</div>
 
 <form>
 	<button id="humanbtn" class="humanbtn" type="button" style="width:80px;height:80px">
 	<img id ="humanimg" class="humanbtn" src="res/human/onnnasouryo.png" width="80" height="80"></button>
-	
+
 	<button id="headbtn" class="headbtn" type="button"style="width:80px;height:80px">
-	<img id="headimg" class="headbtn" src="res/head.png" width="80" height="80"></button>
-	
+	<img id="headimg" class="headbtn" src="res/head/helm_001.png" width="80" height="80"></button>
+
 	<button id="accebtn" class="accebtn" type="button"style="width:80px;height:80px">
-	<img id ="acceimg" class="accebtn" src="res/human.png "width="80" height="80"></button>
-	
-	<button id="bodybtn" class="bodybtn" type="button"style="width:80px;height:80px">
-	<img id="bodyimg" class="bodybtn" src="res/head.png" width="80" height="80"></button>
-	
+	<img id ="acceimg" class="accebtn" src="res/acce/acce_002.png "width="80" height="80"></button>
+
+	<button id="enemybodybtn" class="bodybtn" type="button"style="width:80px;height:80px">
+	<img id="bodyimg" class="bodybtn" src="res/body/armor_001.png" width="80" height="80"></button>
+
 	<button id="swordbtn" class="swordbtn" type="button"style="width:80px;height:80px">
-	<img id="swordimg" class="swordbtn" src="res/head.png" width="80" height="80"></button>
-	
+	<img id="swordimg" class="swordbtn" src="res/sword/we_sword001.png" width="80" height="80"></button>
+
 	<button id="shieldbtn" class="shieldbtn" type="button"style="width:80px;height:80px">
-	<img id ="shieldimg" class="shieldbtn" src="res/human.png "width="80" height="80"></button>
-	
+	<img id ="shieldimg" class="shieldbtn" src="res/shield/shield_001b.png "width="80" height="80"></button>
+
 	<button id="footbtn" class="footbtn" type="button"style="width:80px;height:80px">
-	<img id ="footimg" class="footbtn" src="res/human.png "width="80" height="80"></button>
+	<img id ="footimg" class="footbtn" src="res/foot/boots_001.png "width="80" height="80"></button>
+</form>
+
+<form>
+	<button id="enemyhumanbtn" class="enemyhumanbtn" type="button" style="width:80px;height:80px">
+	<img id ="enemyhumanimg" class="enemyhumanbtn" src="res/human/onnnasouryo.png" width="80" height="80"></button>
+
+	<button id="enemyheadbtn" class="enemyheadbtn" type="button"style="width:80px;height:80px">
+	<img id="enemyheadimg" class="enemyheadbtn" src="res/head/helm_001.png" width="80" height="80"></button>
+
+	<button id="enemyaccebtn" class="enemyaccebtn" type="button"style="width:80px;height:80px">
+	<img id ="enemyacceimg" class="enemyaccebtn" src="res/acce/acce_002.png "width="80" height="80"></button>
+
+	<button id="enemybodybtn" class="enemybodybtn" type="button"style="width:80px;height:80px">
+	<img id="enemybodyimg" class="enemybodybtn" src="res/body/armor_001.png" width="80" height="80"></button>
+
+	<button id="enemyswordbtn" class="enemyswordbtn" type="button"style="width:80px;height:80px">
+	<img id="enemyswordimg" class="enemyswordbtn" src="res/sword/we_sword001.png" width="80" height="80"></button>
+
+	<button id="enemyshieldbtn" class="enemyshieldbtn" type="button"style="width:80px;height:80px">
+	<img id ="enemyshieldimg" class="enemyshieldbtn" src="res/shield/shield_001b.png "width="80" height="80"></button>
+
+	<button id="enemyfootbtn" class="enemyfootbtn" type="button"style="width:80px;height:80px">
+	<img id ="enemyfootimg" class="enemyfootbtn" src="res/foot/boots_001.png "width="80" height="80"></button>
 </form>
 
 <script src="js/jquery-3.1.1.min.js"></script>
+<script src="../GachaBuildersHost/node_modules/socket.io/lib/socket.js"></script>
 <script>
+var hideEq = false;
+var gameStart = false;
+function GetCookie( name )
+{
+    var result = null;
+    var cookieName = name + '=';
+    var allcookies = document.cookie;
+
+    var position = allcookies.indexOf( cookieName );
+    if( position != -1 )
+    {
+        var startIndex = position + cookieName.length;
+
+        var endIndex = allcookies.indexOf( ';', startIndex );
+        if( endIndex == -1 )
+        {
+            endIndex = allcookies.length;
+        }
+
+        result = decodeURIComponent(
+            allcookies.substring( startIndex, endIndex ) );
+    }
+
+    return result;
+}
+
+function CountUp(){
+	var time = document.getElementById("timer").innerHTML;
+	if(gameStart)
+   	document.getElementById("timer").innerHTML = time - 1;
+}
+
+setInterval(CountUp, 1000);
+
+var socket = io.connect();
+socket.on('GameStart'function(ret){
+	gameStart = true;
+	if(GetCookie('data1') == ret[0]){
+	document.getElementById("enemyname").innerHTML = ret[1];
+	document.getElementById("myname").innerHTML = ret[0];
+	}
+	else{
+	document.getElementById("enemyname").innerHTML = ret[0];
+	document.getElementById("myname").innerHTML = ret[1];
+	}
+});
+socket.on('HideEquip',function(){
+	hideEq = true;
+});
+socket.on('OnBattle',function(str){
+  alert(str);
+});
+socket.on('ChangeHuman',function(ep){
+	if(GetCookie('data1') == ep.name){
+	   	document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("humanhp").innerHTML + ep.val['HP'];
+   		document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("humanatk").innerHTML + ep.val['ATK'];
+   		document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("humandef").innerHTML + ep.val['DEF'];
+   		document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("humanspd").innerHTML + ep.val['SPD'];
+   		document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("humanluk").innerHTML + ep.val['LUK'];
+
+   		document.getElementById("humanimg").src = "../"+ep.val['img'];
+  		document.getElementById("humanresult").src = "../"+ep.val['img'];
+   		document.getElementById("humanname").innerHTML = ep.val['name'];
+   		document.getElementById("humanhp").innerHTML = ep.val['HP'];
+   		document.getElementById("humanatk").innerHTML = ep.val['ATK'];
+   		document.getElementById("humandef").innerHTML = ep.val['DEF'];
+   		document.getElementById("humanspd").innerHTML = ep.val['SPD'];
+   		document.getElementById("humanluk").innerHTML = ep.val['LUK'];
+   		document.getElementById("humaneffect").innerHTML = ep.val['EFFECT'];
+
+
+	}
+	else if(!hideEq){
+		document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyhumanhp").innerHTML + ep.val['HP'];
+   		document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyhumanatk").innerHTML + ep.val['ATK'];
+   		document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyhumandef").innerHTML + ep.val['DEF'];
+   		document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyhumanspd").innerHTML + ep.val['SPD'];
+   		document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyhumanluk").innerHTML + ep.val['LUK'];
+
+		document.getElementById("enemyhumanimg").src = "../"+ep.val['img'];
+  		document.getElementById("enemyhumanresult").src = "../"+ep.val['img'];
+   		document.getElementById("enemyhumanname").innerHTML = ep.val['name'];
+   		document.getElementById("enemyhumanhp").innerHTML = ep.val['HP'];
+   		document.getElementById("enemyhumanatk").innerHTML = ep.val['ATK'];
+   		document.getElementById("enemyhumandef").innerHTML = ep.val['DEF'];
+   		document.getElementById("enemyhumanspd").innerHTML = ep.val['SPD'];
+   		document.getElementById("enemyhumanluk").innerHTML = ep.val['LUK'];
+   		document.getElementById("enemyhumaneffect").innerHTML = ep.val['EFFECT'];
+	}
+});
+
+socket.on('ChangeHead',function(ep){
+	if(GetCookie('data1') == ep.name){
+		document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("headhp").innerHTML + ep.val['HP'];
+   		document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("headatk").innerHTML + ep.val['ATK'];
+   		document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("headdef").innerHTML + ep.val['DEF'];
+   		document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("headspd").innerHTML + ep.val['SPD'];
+   		document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("headluk").innerHTML + ep.val['LUK'];
+
+   		document.getElementById("headimg").src = "../"+ep.val['img'];
+   		document.getElementById("headresult").src = "../"+ep.val['img'];
+   		document.getElementById("headname").innerHTML = ep.val['name'];
+   		document.getElementById("headhp").innerHTML = ep.val['HP'];
+   		document.getElementById("headatk").innerHTML = ep.val['ATK'];
+   		document.getElementById("headdef").innerHTML = ep.val['DEF'];
+   		document.getElementById("headspd").innerHTML = ep.val['SPD'];
+   		document.getElementById("headluk").innerHTML = ep.val['LUK'];
+   		document.getElementById("headeffect").innerHTML = ep.val['EFFECT'];
+	}
+  else if(!hideEq){
+  		document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyheadhp").innerHTML + ep.val['HP'];
+   		document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyheadatk").innerHTML + ep.val['ATK'];
+   		document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyheaddef").innerHTML + ep.val['DEF'];
+   		document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyheadspd").innerHTML + ep.val['SPD'];
+   		document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyheadluk").innerHTML + ep.val['LUK'];
+
+  		document.getElementById("enemyheadimg").src = "../"+ep.val['img'];
+  		document.getElementById("enemyheadresult").src = "../"+ep.val['img'];
+   		document.getElementById("enemyheadname").innerHTML = ep.val['name'];
+   		document.getElementById("enemyheadhp").innerHTML = ep.val['HP'];
+      document.getElementById("enemyheadatk").innerHTML = ep.val['ATK'];
+   		document.getElementById("enemyheaddef").innerHTML = ep.val['DEF'];
+   		document.getElementById("enemyheadspd").innerHTML = ep.val['SPD'];
+   		document.getElementById("enemyheadluk").innerHTML = ep.val['LUK'];
+   		document.getElementById("enemyheadeffect").innerHTML = ep.val['EFFECT'];
+  	}
+});
+
+socket.on('ChangeAcce',function(ep){
+	if(GetCookie('data1') == ep.name){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("accehp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("acceatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("accedef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("accespd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("acceluk").innerHTML + ep.val['LUK'];
+
+   		document.getElementById("acceimg").src = "../"+ep.val['img'];
+   		document.getElementById("acceresult").src = "../"+ep.val['img'];
+   		document.getElementById("accename").innerHTML = ep.val['name'];
+   		document.getElementById("accehp").innerHTML = ep.val['HP'];
+   		document.getElementById("acceatk").innerHTML = ep.val['ATK'];
+   		document.getElementById("accedef").innerHTML = ep.val['DEF'];
+   		document.getElementById("accespd").innerHTML = ep.val['SPD'];
+   		document.getElementById("acceluk").innerHTML = ep.val['LUK'];
+   		document.getElementById("acceeffect").innerHTML = ep.val['EFFECT'];
+	}
+  else if(!hideEq){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyaccehp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyacceatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyaccedef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyaccespd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyacceluk").innerHTML + ep.val['LUK'];
+
+    document.getElementById("enemyacceimg").src = "../"+ep.val['img'];
+      document.getElementById("enemyacceresult").src = "../"+ep.val['img'];
+      document.getElementById("enemyaccename").innerHTML = ep.val['name'];
+      document.getElementById("enemyaccehp").innerHTML = ep.val['HP'];
+      document.getElementById("enemyacceatk").innerHTML = ep.val['ATK'];
+      document.getElementById("enemyaccedef").innerHTML = ep.val['DEF'];
+      document.getElementById("enemyaccespd").innerHTML = ep.val['SPD'];
+      document.getElementById("enemyacceluk").innerHTML = ep.val['LUK'];
+      document.getElementById("enemyacceeffect").innerHTML = ep.val['EFFECT'];
+  }
+});
+
+socket.on('ChangeBody',function(ep){
+	if(GetCookie('data1') == ep.name){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("bodyhp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("bodyatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("bodydef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("bodyspd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("bodyluk").innerHTML + ep.val['LUK'];
+
+   		document.getElementById("bodyimg").src = "../"+ep.val['img'];
+   		document.getElementById("bodyresult").src = "../"+ep.val['img'];
+   		document.getElementById("bodyname").innerHTML = ep.val['name'];
+   		document.getElementById("bodyhp").innerHTML = ep.val['HP'];
+   		document.getElementById("bodyatk").innerHTML = ep.val['ATK'];
+   		document.getElementById("bodydef").innerHTML = ep.val['DEF'];
+   		document.getElementById("bodyspd").innerHTML = ep.val['SPD'];
+   		document.getElementById("bodyluk").innerHTML = ep.val['LUK'];
+   		document.getElementById("bodyeffect").innerHTML = ep.val['EFFECT'];
+	}
+  else if(!hideEq){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemybodyhp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemybodyatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemybodydef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemybodyspd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemybodyluk").innerHTML + ep.val['LUK'];
+
+    document.getElementById("enemybodyimg").src = "../"+ep.val['img'];
+      document.getElementById("enemybodyresult").src = "../"+ep.val['img'];
+      document.getElementById("enemybodyname").innerHTML = ep.val['name'];
+      document.getElementById("enemybodyhp").innerHTML = ep.val['HP'];
+      document.getElementById("enemybodyatk").innerHTML = ep.val['ATK'];
+      document.getElementById("enemybodydef").innerHTML = ep.val['DEF'];
+      document.getElementById("enemybodyspd").innerHTML = ep.val['SPD'];
+      document.getElementById("enemybodyluk").innerHTML = ep.val['LUK'];
+      document.getElementById("enemybodyeffect").innerHTML = ep.val['EFFECT'];
+  }
+});
+
+socket.on('ChangeSword',function(ep){
+	if(GetCookie('data1') == ep.name){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("swordhp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("swordatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("sworddef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("swordspd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("swordluk").innerHTML + ep.val['LUK'];
+
+   		document.getElementById("swordimg").src = "../"+ep.val['img'];
+   		document.getElementById("swordresult").src = "../"+ep.val['img'];
+   		document.getElementById("swordname").innerHTML = ep.val['name'];
+   		document.getElementById("swordhp").innerHTML = ep.val['HP'];
+   		document.getElementById("swordatk").innerHTML = ep.val['ATK'];
+   		document.getElementById("sworddef").innerHTML = ep.val['DEF'];
+   		document.getElementById("swordspd").innerHTML = ep.val['SPD'];
+   		document.getElementById("swordluk").innerHTML = ep.val['LUK'];
+   		document.getElementById("swordeffect").innerHTML = ep.val['EFFECT'];
+	}
+  else if(!hideEq){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyswordhp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyswordatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemysworddef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyswordspd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyswordluk").innerHTML + ep.val['LUK'];
+
+    document.getElementById("enemyswordimg").src = "../"+ep.val['img'];
+      document.getElementById("enemyswordresult").src = "../"+ep.val['img'];
+      document.getElementById("enemyswordname").innerHTML = ep.val['name'];
+      document.getElementById("enemyswordhp").innerHTML = ep.val['HP'];
+      document.getElementById("enemyswordatk").innerHTML = ep.val['ATK'];
+      document.getElementById("enemysworddef").innerHTML = ep.val['DEF'];
+      document.getElementById("enemyswordspd").innerHTML = ep.val['SPD'];
+      document.getElementById("enemyswordluk").innerHTML = ep.val['LUK'];
+      document.getElementById("enemyswordeffect").innerHTML = ep.val['EFFECT'];
+  }
+});
+
+socket.on('ChangeShield',function(ep){
+	if(GetCookie('data1') == ep.name){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("shieldhp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("shieldatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("shielddef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("shieldspd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("shieldluk").innerHTML + ep.val['LUK'];
+
+   		document.getElementById("shieldimg").src = "../"+ep.val['img'];
+   		document.getElementById("shieldresult").src = "../"+ep.val['img'];
+   		document.getElementById("shieldname").innerHTML = ep.val['name'];
+   		document.getElementById("shieldhp").innerHTML = ep.val['HP'];
+   		document.getElementById("shieldatk").innerHTML = ep.val['ATK'];
+   		document.getElementById("shielddef").innerHTML = ep.val['DEF'];
+   		document.getElementById("shieldspd").innerHTML = ep.val['SPD'];
+   		document.getElementById("shieldluk").innerHTML = ep.val['LUK'];
+   		document.getElementById("shieldeffect").innerHTML = ep.val['EFFECT'];
+	}
+  else if(!hideEq){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyshieldhp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyshieldatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyshielddef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyshieldspd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyshieldluk").innerHTML + ep.val['LUK'];
+
+    document.getElementById("enemyshieldimg").src = "../"+ep.val['img'];
+      document.getElementById("enemyshieldresult").src = "../"+ep.val['img'];
+      document.getElementById("enemyshieldname").innerHTML = ep.val['name'];
+      document.getElementById("enemyshieldhp").innerHTML = ep.val['HP'];
+      document.getElementById("enemyshieldatk").innerHTML = ep.val['ATK'];
+      document.getElementById("enemyshielddef").innerHTML = ep.val['DEF'];
+      document.getElementById("enemyshieldspd").innerHTML = ep.val['SPD'];
+      document.getElementById("enemyshieldluk").innerHTML = ep.val['LUK'];
+      document.getElementById("enemyshieldeffect").innerHTML = ep.val['EFFECT'];
+  }
+});
+
+socket.on('ChangeFoot',function(ep){
+	if(GetCookie('data1') == ep.name){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("foothp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("footatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("footdef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("footspd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("footluk").innerHTML + ep.val['LUK'];
+
+   		document.getElementById("footimg").src = "../"+ep.val['img'];
+   		document.getElementById("footresult").src = "../"+ep.val['img'];
+   		document.getElementById("footname").innerHTML = ep.val['name'];
+   		document.getElementById("foothp").innerHTML = ep.val['HP'];
+   		document.getElementById("footatk").innerHTML = ep.val['ATK'];
+   		document.getElementById("footdef").innerHTML = ep.val['DEF'];
+   		document.getElementById("footspd").innerHTML = ep.val['SPD'];
+   		document.getElementById("footluk").innerHTML = ep.val['LUK'];
+   		document.getElementById("footeffect").innerHTML = ep.val['EFFECT'];
+	}
+  else if(!hideEq){
+    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyfoothp").innerHTML + ep.val['HP'];
+    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyfootatk").innerHTML + ep.val['ATK'];
+    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyfootdef").innerHTML + ep.val['DEF'];
+    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyfootspd").innerHTML + ep.val['SPD'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyfootluk").innerHTML + ep.val['LUK'];
+
+    document.getElementById("enemyfootimg").src = "../"+ep.val['img'];
+      document.getElementById("enemyfootresult").src = "../"+ep.val['img'];
+      document.getElementById("enemyfootname").innerHTML = ep.val['name'];
+      document.getElementById("enemyfoothp").innerHTML = ep.val['HP'];
+      document.getElementById("enemyfootatk").innerHTML = ep.val['ATK'];
+      document.getElementById("enemyfootdef").innerHTML = ep.val['DEF'];
+      document.getElementById("enemyfootspd").innerHTML = ep.val['SPD'];
+      document.getElementById("enemyfootluk").innerHTML = ep.val['LUK'];
+      document.getElementById("enemyfooteffect").innerHTML = ep.val['EFFECT'];
+  }
+});
+
 $(document).ready(function(){
 	$("#humanbtn").click(function(){
-		$.ajax({
- 		   url: "../GachaBuildersHost/weaponGacha.php"
-       , dataType: "json"
-       , success: function( json ) {
-         resultTmp = "";
-           resultTmp += json["name"] + " " + json["HP"] +"<br>";
-           document.getElementById("humanimg").src = "../"+json['img'];
-           document.getElementById("humanresult").src = "../"+json['img'];
+	 	socket.emit('GachaHuman');
+	});
 
-           document.getElementById("humanname").innerHTML = json['name'];
-           document.getElementById("humanhp").innerHTML = json['HP'];
-           document.getElementById("humanatk").innerHTML = json['ATK'];
-           document.getElementById("humandef").innerHTML = json['DEF'];
-           document.getElementById("humanspd").innerHTML = json['SPD'];
-           document.getElementById("humanluk").innerHTML = json['LUK'];
-           document.getElementById("humaneffect").innerHTML = json['EFFECT'];
-      }
-  	});
-	});
 	$("#headbtn").click(function(){
-		$.ajax({
- 		   url: "../GachaBuildersHost/weaponGacha.php"
-       , dataType: "json"
-       , success: function( json ) {
-         resultTmp = "";
-           resultTmp += json["name"] + " " + json["HP"] +"<br>";
-           document.getElementById("headimg").src = "../"+json['img'];
-           document.getElementById("headresult").src = "../"+json['img'];
-      }
-  	});
+		socket.emit('GachaHead');
 	});
+
 	$("#accebtn").click(function(){
-		$.ajax({
- 		   url: "../GachaBuildersHost/weaponGacha.php"
-       , dataType: "json"
-       , success: function( json ) {
-         resultTmp = "";
-           resultTmp += json["name"] + " " + json["HP"] +"<br>";
-           document.getElementById("acceimg").src = "../"+json['img'];
-           document.getElementById("acceresult").src = "../"+json['img'];
-      }
+	 	socket.emit('GachaAcce');
   	});
-	});$("#bodybtn").click(function(){
-		$.ajax({
- 		   url: "../GachaBuildersHost/weaponGacha.php"
-       , dataType: "json"
-       , success: function( json ) {
-         resultTmp = "";
-           resultTmp += json["name"] + " " + json["HP"] +"<br>";
-           document.getElementById("bodyimg").src = "../"+json['img'];
-           document.getElementById("bodyresult").src = "../"+json['img'];
-      }
-  	});
+
+  	$("#bodybtn").click(function(){
+	 	socket.emit('GachaBody');
 	});
+
 	$("#swordbtn").click(function(){
-		$.ajax({
- 		   url: "../GachaBuildersHost/weaponGacha.php"
-       , dataType: "json"
-       , success: function( json ) {
-         resultTmp = "";
-           resultTmp += json["name"] + " " + json["HP"] +"<br>";
-           document.getElementById("swordimg").src = "../"+json['img'];
-           document.getElementById("swordresult").src = "../"+json['img'];
-      }
-  	});
-	});
+		socket.emit('GachaSword');
+ 	});
+
 	$("#shieldbtn").click(function(){
-		$.ajax({
- 		   url: "../GachaBuildersHost/weaponGacha.php"
-       , dataType: "json"
-       , success: function( json ) {
-         resultTmp = "";
-           resultTmp += json["name"] + " " + json["HP"] +"<br>";
-           document.getElementById("shieldimg").src = "../"+json['img'];
-           document.getElementById("shieldresult").src = "../"+json['img'];
-      }
-  	});
+	 	socket.emit('GachaShield');
 	});
+
 	$("#footbtn").click(function(){
-		$.ajax({
- 		   url: "../GachaBuildersHost/weaponGacha.php"
-       , dataType: "json"
-       , success: function( json ) {
-         resultTmp = "";
-           resultTmp += json["name"] + " " + json["HP"] +"<br>";
-           document.getElementById("footimg").src = "../"+json['img'];
-           document.getElementById("footresult").src = "../"+json['img'];
-      }
-  	});
+	 	socket.emit('GachaFoot');
 	});
 });
 </script>
 
 </body>
 </html>
-
