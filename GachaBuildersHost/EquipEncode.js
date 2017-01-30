@@ -27,6 +27,6 @@ var data = {
     //this.img=data['img'];
     //}
   }
-}
+};
 
 module.exports = data;

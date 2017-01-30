@@ -45,49 +45,51 @@ function room(){
     };
 
     that.setMonster = function(data){
-        var no = getPlayerNo(data.name);
+        var no = that.getPlayerNo(data.name);
         equip[no].mosnter.php_json_encode(data.val);
     };
     that.setHead = function(data){
-        var no = getPlayerNo(data.name);
+        var no = that.getPlayerNo(data.name);
         equip[no].head.php_json_encode(data.val);
     };
     that.setShield = function(data){
-        var no = getPlayerNo(data.name);
+        var no = that.getPlayerNo(data.name);
         equip[no].shield.php_json_encode(data.val);
     };
     that.setBody = function(data){
-        var no = getPlayerNo(data.name);
+        var no = that.getPlayerNo(data.name);
         equip[no].body.php_json_encode(data.val);
     };
     that.setWeapon = function(data){
-        var no = getPlayerNo(data.name);
+        var no = that.getPlayerNo(data.name);
         equip[no].weapon.php_json_encode(data.val);
     };
     that.setHood = function(data){
-        var no = getPlayerNo(data.name);
+        var no = that.getPlayerNo(data.name);
         equip[no].hood.php_json_encode(data.val);
     };
     that.setAccessory = function(data){
-        var no = getPlayerNo(data.name);
+        var no = that.getPlayerNo(data.name);
         equip[no].accessory.php_json_encode(data.val);
-    };
-
-    that.isStart = function(){
-        if(Object.keys(handBuffer).length===2){
-            return true;
-        } else {
-            return false;
-        }
     };
 
     that.damage = function(p1,p2){
         var d = p2.def - p1.atk;
         d = Math.max(d, 1);
-        p2.hp -= d;
+
+        var r = Math.random() * (100 - 0) + 0;
+        var cr = 1;
+        if(r < p1._cr){
+          cr = 1.5;
+        }
+        r = Math.random() * (100 - 0) + 0;
+        if(r < p2._dogde){
+          cr = 0;
+        }
+        p2.hp -= d * cr;
         p2.hp = Math.max(p2.hp, 0);
         return p2;
-    }
+    };
 
     that.play = function(p1,p2){
         var _p1 = p1;
@@ -103,39 +105,64 @@ function room(){
         }
         return inPlayers[1];
     };
-    that.doBattle = function(){
-        var player1 = inPlayers[0];
-        var player2 = inPlayers[1];
-        var player1Head = equip[0].head;
-        var player2Head = equip[1].head;
+    that.eqT = function(equip){
+      var data = {
+        monster:0,
+        hp:0,
+        atk:0,
+        def:0,
+        luck:0,
+        _cr:0,
+        _dogde:0,
+        shp:0,
+        satk:0,
+        sdef:0,
+        sluck:0
+      };
 
-        playerdata = [{
-          hp:0,
-          atk:0,
-          def:0,
-          luck:0
-        },{
-          hp:0,
-          atk:0,
-          def:0,
-          luck:0
-        }];
-        for (var key in equip[0]) {
-          if (equip[0].hasOwnProperty(key)) {
-            playerdata[0].atk += equip[0][key].atk;
-            playerdata[0].def += equip[0][key].def;
-            playerdata[0].hp += equip[0][key].hp;
-            playerdata[0].luck += equip[0][key].luck;
+      for (var key in equip[0]) {
+        if (equip[0].hasOwnProperty(key)) {
+          if(key == 'monster'){
+            data.satk += equip[0][key].atk;
+            data.sdef += equip[0][key].def;
+            data.shp += equip[0][key].hp;
+            data.sluck += equip[0][key].luck;
+            data.monster = equip[0][key].effect;
+          }else{
+            data.atk += equip[0][key].atk;
+            data.def += equip[0][key].def;
+            data.hp += equip[0][key].hp;
+            data.luck += equip[0][key].luck;
           }
         }
-        for (var key in equip[1]) {
-          if (equip[1].hasOwnProperty(key)) {
-            playerdata[1].atk += equip[1][key].atk;
-            playerdata[1].def += equip[1][key].def;
-            playerdata[1].hp += equip[1][key].hp;
-            playerdata[1].luck += equip[1][key].luck;
-          }
-        }
+      }
+      data.atk *= data.satk;
+      data.def *= data.sdef;
+      data.hp *= data.shp;
+      data.luck *= data.sluck;
+
+      if(data.monster === 0){
+        data._cr = data.luck / 100.0;
+        data._dogde = data.luck / 100.0;
+      }else if(data.monster == 1){
+
+          data._cr = data.luck / 33.0;
+          data._dogde = data.luck / 200.0;
+      }else if(data.monster == 2){
+
+          data._cr = data.luck / 200.0;
+          data._dogde = data.luck / 33.0;
+      }else{
+
+          data._cr = data.luck / 50.0;
+          data._dogde = data.luck / 50.0;
+      }
+
+      return data;
+    };
+    that.doBattle = function(){
+
+        var playerdata = [that.eqT(equip[0]),that.eqT(equip[1])];
 
         var ret = that.play(playerdata[0],playerdata[1]);
         return ret;

@@ -11,14 +11,14 @@ function gameServer(spec, my) {
 
 
     var hideEquip = function(){
-      io.sockets.in(roomId).emit('HideEquip');
-    }
+      io.sockets.in(0).emit('HideEquip');
+    };
     setTimeout(hideEquip, 1000 * 60);
 
     var onBattle = function(){
-      io.sockets.in(roomId).emit('OnBattle',mainRoom.doBattle());
-    }
-    setTimeout(onButtle, 1000 * 90);
+      io.sockets.in(0).emit('OnBattle',mainRoom.doBattle());
+    };
+    setTimeout(onBattle, 1000 * 90);
 
     io.sockets.on('connection', function(socket) {
         socket.on('EnterRoom',function(data){
@@ -49,7 +49,7 @@ function gameServer(spec, my) {
                 var name = data.name;
                 var eq = {
                     name : name,
-                    val : json;
+                    val : json
                 };
                 mainRoom.setHead(eq);
                 io.sockets.in(roomId).emit('ChangeMonster', eq);
@@ -62,7 +62,7 @@ function gameServer(spec, my) {
                 var name = data.name;
                 var eq = {
                     name : name,
-                    val : json;
+                    val : json
                 };
                 mainRoom.setHead(eq);
                 io.sockets.in(roomId).emit('ChangeHelm', eq);
@@ -75,7 +75,7 @@ function gameServer(spec, my) {
                 var name = data.name;
                 var eq = {
                     name : name,
-                    val : json;
+                    val : json
                 };
                 mainRoom.setHead(eq);
                 io.sockets.in(roomId).emit('ChangeArmor', eq);
@@ -88,7 +88,7 @@ function gameServer(spec, my) {
                 var name = data.name;
                 var eq = {
                     name : name,
-                    val : json;
+                    val : json
                 };
                 mainRoom.setHead(eq);
                 io.sockets.in(roomId).emit('ChangeBoots', eq);
@@ -107,7 +107,7 @@ function gameServer(spec, my) {
                     var name = data.name;
                     var eq = {
                         name : name,
-                        val : json;
+                        val : json
                     };
                     mainRoom.setHead(eq);
                     io.sockets.in(roomId).emit('ChangeWeapon', eq);
@@ -122,7 +122,7 @@ function gameServer(spec, my) {
                 var name = data.name;
                 var eq = {
                     name : name,
-                    val : json;
+                    val : json
                 };
                 mainRoom.setHead(eq);
                 io.sockets.in(roomId).emit('ChangeShield', eq);
@@ -135,7 +135,7 @@ function gameServer(spec, my) {
                 var name = data.name;
                 var eq = {
                     name : name,
-                    val : json;
+                    val : json
                 };
                 mainRoom.setHead(eq);
                 io.sockets.in(roomId).emit('ChangeAcce', eq);
