@@ -2,6 +2,8 @@ function room(){
     var that = {};
     var inPlayers = [];
 
+    var playerData = [];
+
     var equip = [{
       monster : require('./EquipEncode.js'),
       helm : require('./EquipEncode.js'),
@@ -73,37 +75,57 @@ function room(){
         equip[no].accessory.php_json_encode(data.val);
     };
 
-    that.damage = function(p1,p2){
+    that.damage = function(p1,p2,cr){
         var d = p2.def - p1.atk;
         d = Math.max(d, 1);
-
-        var r = Math.random() * (100 - 0) + 0;
-        var cr = 1;
-        if(r < p1._cr){
-          cr = 1.5;
-        }
-        r = Math.random() * (100 - 0) + 0;
-        if(r < p2._dogde){
-          cr = 0;
-        }
-        p2.hp -= d * cr;
+        d *= cr;
+        p2.hp -= d;
         p2.hp = Math.max(p2.hp, 0);
-        return p2;
+        return {p:p2,d:d};
     };
 
-    that.play = function(p1,p2){
+    that.nextTurn = function(p1,p2,coll){
+      var _p1 = p1;
+      var text='';
+      var damageText = '攻撃';
+      var cr = 1;
+      var r = Math.random() * (100 - 0) + 0;
+      if(r < p1._cr){
+        cr = 1.5;
+        damageText = 'クリティカル攻撃';
+      }
+      r = Math.random() * (100 - 0) + 0;
+      if(r < p2._dogde){
+        text = '攻撃を回避した！';
+      }else{
+        var ret = that.damage(p2,_p1,cr);
+        _p1 = ret.p;
+        text = ret.d+'ダメージの'+damageText+'をしてHPが'+_p1.hp+'になった。';
+      }
+      coll(text);
+      return _p1;
+
+    };
+    that.getWiner = function(_p1,_p2){
+      if(_p1.hp == _p2.hp ){
+        return 'Draw';
+      }else if(_p1.hp < _p2.hp){
+        return inPlayers[0];
+      }
+      return inPlayers[1];
+    };
+
+    that.play = function(coll,p1,p2){
         var _p1 = p1;
         var _p2 = p2;
         for(var i = 0;i<100|| _p1.hp<=0||_p2.hp <=0;i++){
-          _p2 = that.damage(_p1,_p2);
-          _p1 = that.damage(_p2,_p1);
+          p1 = that.nextTurn(_p1,_p2,coll);
+          p2 = that.nextTurn(_p2,_p1,coll);
         }
-        if(_p1.hp == _p2.hp ){
-          return 'Draw';
-        }else if(_p1.hp < p2.hp){
-          return inPlayers[0];
-        }
-        return inPlayers[1];
+
+        var name = that.getWiner(_p1,_p2);
+        coll(name+'の勝ち');
+        return name;
     };
     that.eqT = function(equip){
       var data = {
@@ -160,11 +182,14 @@ function room(){
 
       return data;
     };
-    that.doBattle = function(){
+    that.doBattle = function(coll){
 
-        var playerdata = [that.eqT(equip[0]),that.eqT(equip[1])];
+      this.playerData.push(that.eqT(equip[0]));
+      this.playerData.push(that.eqT(equip[1]));
 
-        var ret = that.play(playerdata[0],playerdata[1]);
+      coll('戦闘開始');
+
+        var ret = that.play(coll,this.playerData[0],this.playerData[1]);
         return ret;
     };
 

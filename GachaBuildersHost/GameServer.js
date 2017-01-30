@@ -146,7 +146,11 @@ function gameServer(spec, my) {
             socket.get('loginInfo',function(err,data){
                 var roomId = data.roomId;
                 if(mainRoom.isStart()){
-                    var ret = mainRoom.doBattle();
+
+                    var collback = function(text){
+                      io.sockets.in(roomId).emit('BattleLog', text);
+                    };
+                    var ret = mainRoom.doBattle(collback);
                     io.sockets.in(roomId).emit('Result', ret);
                 }
             });
