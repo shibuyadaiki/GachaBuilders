@@ -1,13 +1,13 @@
 <?php
 
-require_one('Gacha.php');
+require('Gacha.php');
 //----------------------------
 //データ準備
 //----------------------------
 $data = [[
-	['name'=>'鶏王','HP'=>15,'ATK'=>20,'DEF'=>15,'SPD'=>20,'LUK'=>10,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/monster/keiou.png'],
-	['name'=>'メフィスト','HP'=>15,'ATK'=>17,'DEF'=>15,'SPD'=>13,'LUK'=>7,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/monster/mefist.png'],
-	['name'=>'アルドゥイン','HP'=>20,'ATK'=>15,'DEF'=>20,'SPD'=>10,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/monster/arudin.png'],
+	['name'=>'鶏王','HP'=>15,'ATK'=>20,'DEF'=>15,'SPD'=>20,'LUK'=>10,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/monster/tikinkisi.png'],
+	['name'=>'メフィスト','HP'=>15,'ATK'=>17,'DEF'=>15,'SPD'=>13,'LUK'=>7,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/monster/akuma.png'],
+	['name'=>'アルドゥイン','HP'=>20,'ATK'=>15,'DEF'=>20,'SPD'=>10,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/monster/poisondragon.png'],
 
 
 

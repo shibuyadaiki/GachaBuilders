@@ -90,7 +90,7 @@ function room() {
 
     that.damage = function (p1, p2, cr) {
         var def = p2.def - (p2.def * p1.armpen);
-        var d = def - (p1.atk * cr);
+        var d = (p1.atk * cr) - def;
         d = Math.max(d, 1);
         p2.hp -= d;
         p2.hp = Math.max(p2.hp, 0);
@@ -118,12 +118,12 @@ function room() {
       var text='';
       var damageText = '攻撃';
       var cr = 1;
-      var r = Math.random() * (100 - 0) + 0;
+      var r = Math.random();
       if(r < p2._cr){
         cr = 1.5;
         damageText = 'クリティカル攻撃';
       }
-      r = Math.random() * (100 - 0) + 0;
+      r = Math.random()
       if(r < p1._dogde){
           text = name1 + 'は攻撃を回避した！';
           call(text);
@@ -221,7 +221,7 @@ function room() {
             data.mirror += 0.1;
         }
         if (effect === 3) {
-            data.regen += 10;
+            data.regen += 5;
         }
     }
     that.eqT = function(equip){
@@ -274,20 +274,20 @@ function room() {
       //data.luck *= data.sluck;
 
       if(data.monster === 0){
-        data._cr = data.luck / 100.0;
-        data._dogde = data.luck / 100.0;
+        data._cr = data.luck / 400.0;
+        data._dogde = data.luck / 400.0;
       }else if(data.monster == 1){
 
-          data._cr = data.luck / 33.0;
+          data._cr = data.luck / 500.0;
           data._dogde = data.luck / 200.0;
       }else if(data.monster == 2){
 
           data._cr = data.luck / 200.0;
-          data._dogde = data.luck / 33.0;
+          data._dogde = data.luck / 500.0;
       }else{
 
-          data._cr = data.luck / 50.0;
-          data._dogde = data.luck / 50.0;
+          data._cr = data.luck / 300.0;
+          data._dogde = data.luck / 300.0;
       }
 
       return data;

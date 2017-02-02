@@ -32,9 +32,26 @@ function gameServer(spec, my) {
         });
     };
 
+    var addEffectText = function (eq) {
+      var ef = eq.effect;
+        if(ef === 0){
+          eq.EFFECT_TEXT = '無し';
+        }
+        else if(ef === 1){
+          eq.EFFECT_TEXT = '防御貫通+25%';
+        }
+        else if(ef === 2){
+          eq.EFFECT_TEXT = '反射+10%';
+        }
+        else if(ef === 3){
+          eq.EFFECT_TEXT = '自動回復+5';
+        }
+    };
+
     var preurl = 'http://localhost:5900/GachaBuildersHost/';
     var PlayGacha = function (socket, php, send, setfunc) {
         if (HasNull(socket)) return;
+        if(mainRoom.isGameEnd())return;
         ajax.get(preurl + php, function (err, json) {
             if (err !== null) {
                 console.log(err);
@@ -50,6 +67,7 @@ function gameServer(spec, my) {
                 name: name,
                 val: JSON.parse(json.body)
             };
+            addEffectText(eq);
             setfunc(eq);
             io.sockets.in(roomId).emit(send, eq);
         });
@@ -93,7 +111,7 @@ function gameServer(spec, my) {
                 mainRoom.join(name);
                 socket.join(roomId);
 
-                
+
                 //PlayGacha(socket, 'monsterGacha.php', 'ChangeMonster', function (eq) { mainRoom.setMonster(eq); });
                 //PlayGacha(socket, 'helmGacha.php', 'ChangeHelm', function (eq) { mainRoom.setHelm(eq); });
                 //PlayGacha(socket, 'armorGacha.php', 'ChangeArmor', function (eq) { mainRoom.setArmor(eq); });
@@ -113,7 +131,7 @@ function gameServer(spec, my) {
                 io.sockets.in(roomId).emit('GameStart', ret);
 
                 timeOutID60 = setTimeout(hideEquip, 1000 * 60, roomId);
-                timeOutID90 = setTimeout(onBattle, 1000 * 30, roomId);
+                timeOutID90 = setTimeout(onBattle, 1000 * 90, roomId);
             }
 
         });
@@ -149,7 +167,7 @@ function gameServer(spec, my) {
         socket.on('disconnect', function (data) {
             if (HasNull(socket)) return;
             var roomId = socket.loginInfo.roomId;
-            var winlog = socket.loginInfo.name +'���ޏo�B';
+            var winlog = socket.loginInfo.name +'が退出しました';
             //socket.leave(roomId);
             //var clients = io.sockets.clients(roomId);
             //console.log(clients);
