@@ -6,11 +6,12 @@
     <input type="submit" name="mode" id="gameStart" value="ゲームスタート！">
   </form>
   <script src="js/jquery-3.1.1.min.js"></script>
-  <script src="../GachaBuildersHost/node_modules/socket.io/lib/socket.js"></script>
+  <script src="http://124.214.249.212:7777/socket.io/socket.io.js"></script>
 	<script>
+
+        var socket = io.connect('124.214.249.212:7777');
 		$(document).ready(function(){
 			$("#gameStart").click(function(){
-				 var socket = io.connect();
 				 var value = $("#nameId").val();
 				var data = {
 					roomId : 0,
@@ -344,7 +345,7 @@
 	<button id="accebtn" class="accebtn" type="button"style="width:80px;height:80px">
 	<img id ="acceimg" class="accebtn" src="res/acce/acce_002.png "width="80" height="80"></button>
 
-	<button id="enemybodybtn" class="bodybtn" type="button"style="width:80px;height:80px">
+	<button id="bodybtn" class="bodybtn" type="button"style="width:80px;height:80px">
 	<img id="bodyimg" class="bodybtn" src="res/body/armor_001.png" width="80" height="80"></button>
 
 	<button id="swordbtn" class="swordbtn" type="button"style="width:80px;height:80px">
@@ -381,7 +382,6 @@
 </form>
 
 <script src="js/jquery-3.1.1.min.js"></script>
-<script src="../GachaBuildersHost/node_modules/socket.io/lib/socket.js"></script>
 <script>
 var hideEq = false;
 var gameStart = false;
@@ -417,7 +417,6 @@ function CountUp(){
 
 setInterval(CountUp, 1000);
 
-var socket = io.connect();
 socket.on('GameStart',function(ret){
 	gameStart = true;
 	if(GetCookie('data1') == ret[0]){
@@ -435,13 +434,13 @@ socket.on('HideEquip',function(){
 socket.on('OnBattle',function(str){
   alert(str);
 });
-socket.on('ChangeHuman',function(ep){
+socket.on('ChangeMonster',function(ep){
 	if(GetCookie('data1') == ep.name){
 	   	document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("humanhp").innerHTML + ep.val['HP'];
    		document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("humanatk").innerHTML + ep.val['ATK'];
    		document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("humandef").innerHTML + ep.val['DEF'];
    		document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("humanspd").innerHTML + ep.val['SPD'];
-   		document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("humanluk").innerHTML + ep.val['LUK'];
+   		document.getElementById("totalluk").innerHTML = document.getElementById("totalluk").innerHTML - document.getElementById("humanluk").innerHTML + ep.val['LUK'];
 
    		document.getElementById("humanimg").src = "../"+ep.val['img'];
   		document.getElementById("humanresult").src = "../"+ep.val['img'];
@@ -456,11 +455,11 @@ socket.on('ChangeHuman',function(ep){
 
 	}
 	else if(!hideEq){
-		document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyhumanhp").innerHTML + ep.val['HP'];
-   		document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyhumanatk").innerHTML + ep.val['ATK'];
-   		document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyhumandef").innerHTML + ep.val['DEF'];
-   		document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyhumanspd").innerHTML + ep.val['SPD'];
-   		document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyhumanluk").innerHTML + ep.val['LUK'];
+	    document.getElementById("enemytotalhp").innerHTML = document.getElementById("enemytotalhp").innerHTML - document.getElementById("enemyhumanhp").innerHTML + ep.val['HP'];
+		document.getElementById("enemytotalatk").innerHTML = document.getElementById("enemytotalatk").innerHTML - document.getElementById("enemyhumanatk").innerHTML + ep.val['ATK'];
+		document.getElementById("enemytotaldef").innerHTML = document.getElementById("enemytotaldef").innerHTML - document.getElementById("enemyhumandef").innerHTML + ep.val['DEF'];
+		document.getElementById("enemytotalspd").innerHTML = document.getElementById("enemytotalspd").innerHTML - document.getElementById("enemyhumanspd").innerHTML + ep.val['SPD'];
+		document.getElementById("enemytotalluk").innerHTML = document.getElementById("enemytotalluk").innerHTML - document.getElementById("enemyhumanluk").innerHTML + ep.val['LUK'];
 
 		document.getElementById("enemyhumanimg").src = "../"+ep.val['img'];
   		document.getElementById("enemyhumanresult").src = "../"+ep.val['img'];
@@ -474,13 +473,13 @@ socket.on('ChangeHuman',function(ep){
 	}
 });
 
-socket.on('ChangeHead',function(ep){
+socket.on('ChangeHelm',function(ep){
 	if(GetCookie('data1') == ep.name){
 		document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("headhp").innerHTML + ep.val['HP'];
    		document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("headatk").innerHTML + ep.val['ATK'];
    		document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("headdef").innerHTML + ep.val['DEF'];
    		document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("headspd").innerHTML + ep.val['SPD'];
-   		document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("headluk").innerHTML + ep.val['LUK'];
+   		document.getElementById("totalluk").innerHTML = document.getElementById("totalluk").innerHTML - document.getElementById("headluk").innerHTML + ep.val['LUK'];
 
    		document.getElementById("headimg").src = "../"+ep.val['img'];
    		document.getElementById("headresult").src = "../"+ep.val['img'];
@@ -493,11 +492,11 @@ socket.on('ChangeHead',function(ep){
    		document.getElementById("headeffect").innerHTML = ep.val['EFFECT'];
 	}
   else if(!hideEq){
-  		document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyheadhp").innerHTML + ep.val['HP'];
-   		document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyheadatk").innerHTML + ep.val['ATK'];
-   		document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyheaddef").innerHTML + ep.val['DEF'];
-   		document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyheadspd").innerHTML + ep.val['SPD'];
-   		document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyheadluk").innerHTML + ep.val['LUK'];
+      document.getElementById("enemytotalhp").innerHTML = document.getElementById("enemytotalhp").innerHTML - document.getElementById("enemyheadhp").innerHTML + ep.val['HP'];
+      document.getElementById("enemytotalatk").innerHTML = document.getElementById("enemytotalatk").innerHTML - document.getElementById("enemyheadatk").innerHTML + ep.val['ATK'];
+      document.getElementById("enemytotaldef").innerHTML = document.getElementById("enemytotaldef").innerHTML - document.getElementById("enemyheaddef").innerHTML + ep.val['DEF'];
+      document.getElementById("enemytotalspd").innerHTML = document.getElementById("enemytotalspd").innerHTML - document.getElementById("enemyheadspd").innerHTML + ep.val['SPD'];
+      document.getElementById("enemytotalluk").innerHTML = document.getElementById("enemytotalluk").innerHTML - document.getElementById("enemyheadluk").innerHTML + ep.val['LUK'];
 
   		document.getElementById("enemyheadimg").src = "../"+ep.val['img'];
   		document.getElementById("enemyheadresult").src = "../"+ep.val['img'];
@@ -517,7 +516,7 @@ socket.on('ChangeAcce',function(ep){
     document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("acceatk").innerHTML + ep.val['ATK'];
     document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("accedef").innerHTML + ep.val['DEF'];
     document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("accespd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("acceluk").innerHTML + ep.val['LUK'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totalluk").innerHTML - document.getElementById("acceluk").innerHTML + ep.val['LUK'];
 
    		document.getElementById("acceimg").src = "../"+ep.val['img'];
    		document.getElementById("acceresult").src = "../"+ep.val['img'];
@@ -530,11 +529,11 @@ socket.on('ChangeAcce',function(ep){
    		document.getElementById("acceeffect").innerHTML = ep.val['EFFECT'];
 	}
   else if(!hideEq){
-    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyaccehp").innerHTML + ep.val['HP'];
-    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyacceatk").innerHTML + ep.val['ATK'];
-    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyaccedef").innerHTML + ep.val['DEF'];
-    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyaccespd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyacceluk").innerHTML + ep.val['LUK'];
+      document.getElementById("enemytotalhp").innerHTML = document.getElementById("enemytotalhp").innerHTML - document.getElementById("enemyaccehp").innerHTML + ep.val['HP'];
+      document.getElementById("enemytotalatk").innerHTML = document.getElementById("enemytotalatk").innerHTML - document.getElementById("enemyacceatk").innerHTML + ep.val['ATK'];
+      document.getElementById("enemytotaldef").innerHTML = document.getElementById("enemytotaldef").innerHTML - document.getElementById("enemyaccedef").innerHTML + ep.val['DEF'];
+      document.getElementById("enemytotalspd").innerHTML = document.getElementById("enemytotalspd").innerHTML - document.getElementById("enemyaccespd").innerHTML + ep.val['SPD'];
+      document.getElementById("enemytotalluk").innerHTML = document.getElementById("enemytotalluk").innerHTML - document.getElementById("enemyacceluk").innerHTML + ep.val['LUK'];
 
     document.getElementById("enemyacceimg").src = "../"+ep.val['img'];
       document.getElementById("enemyacceresult").src = "../"+ep.val['img'];
@@ -548,13 +547,13 @@ socket.on('ChangeAcce',function(ep){
   }
 });
 
-socket.on('ChangeBody',function(ep){
+socket.on('ChangeArmor', function (ep) {
 	if(GetCookie('data1') == ep.name){
     document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("bodyhp").innerHTML + ep.val['HP'];
     document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("bodyatk").innerHTML + ep.val['ATK'];
     document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("bodydef").innerHTML + ep.val['DEF'];
     document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("bodyspd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("bodyluk").innerHTML + ep.val['LUK'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totalluk").innerHTML - document.getElementById("bodyluk").innerHTML + ep.val['LUK'];
 
    		document.getElementById("bodyimg").src = "../"+ep.val['img'];
    		document.getElementById("bodyresult").src = "../"+ep.val['img'];
@@ -567,11 +566,11 @@ socket.on('ChangeBody',function(ep){
    		document.getElementById("bodyeffect").innerHTML = ep.val['EFFECT'];
 	}
   else if(!hideEq){
-    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemybodyhp").innerHTML + ep.val['HP'];
-    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemybodyatk").innerHTML + ep.val['ATK'];
-    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemybodydef").innerHTML + ep.val['DEF'];
-    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemybodyspd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemybodyluk").innerHTML + ep.val['LUK'];
+      document.getElementById("enemytotalhp").innerHTML = document.getElementById("enemytotalhp").innerHTML - document.getElementById("enemybodyhp").innerHTML + ep.val['HP'];
+      document.getElementById("enemytotalatk").innerHTML = document.getElementById("enemytotalatk").innerHTML - document.getElementById("enemybodyatk").innerHTML + ep.val['ATK'];
+      document.getElementById("enemytotaldef").innerHTML = document.getElementById("enemytotaldef").innerHTML - document.getElementById("enemybodydef").innerHTML + ep.val['DEF'];
+      document.getElementById("enemytotalspd").innerHTML = document.getElementById("enemytotalspd").innerHTML - document.getElementById("enemybodyspd").innerHTML + ep.val['SPD'];
+      document.getElementById("enemytotalluk").innerHTML = document.getElementById("enemytotalluk").innerHTML - document.getElementById("enemybodyluk").innerHTML + ep.val['LUK'];
 
     document.getElementById("enemybodyimg").src = "../"+ep.val['img'];
       document.getElementById("enemybodyresult").src = "../"+ep.val['img'];
@@ -585,13 +584,13 @@ socket.on('ChangeBody',function(ep){
   }
 });
 
-socket.on('ChangeSword',function(ep){
+socket.on('ChangeWeapon',function(ep){
 	if(GetCookie('data1') == ep.name){
     document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("swordhp").innerHTML + ep.val['HP'];
     document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("swordatk").innerHTML + ep.val['ATK'];
     document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("sworddef").innerHTML + ep.val['DEF'];
     document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("swordspd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("swordluk").innerHTML + ep.val['LUK'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totalluk").innerHTML - document.getElementById("swordluk").innerHTML + ep.val['LUK'];
 
    		document.getElementById("swordimg").src = "../"+ep.val['img'];
    		document.getElementById("swordresult").src = "../"+ep.val['img'];
@@ -604,11 +603,11 @@ socket.on('ChangeSword',function(ep){
    		document.getElementById("swordeffect").innerHTML = ep.val['EFFECT'];
 	}
   else if(!hideEq){
-    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyswordhp").innerHTML + ep.val['HP'];
-    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyswordatk").innerHTML + ep.val['ATK'];
-    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemysworddef").innerHTML + ep.val['DEF'];
-    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyswordspd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyswordluk").innerHTML + ep.val['LUK'];
+      document.getElementById("enemytotalhp").innerHTML = document.getElementById("enemytotalhp").innerHTML - document.getElementById("enemyswordhp").innerHTML + ep.val['HP'];
+      document.getElementById("enemytotalatk").innerHTML = document.getElementById("enemytotalatk").innerHTML - document.getElementById("enemyswordatk").innerHTML + ep.val['ATK'];
+      document.getElementById("enemytotaldef").innerHTML = document.getElementById("enemytotaldef").innerHTML - document.getElementById("enemysworddef").innerHTML + ep.val['DEF'];
+      document.getElementById("enemytotalspd").innerHTML = document.getElementById("enemytotalspd").innerHTML - document.getElementById("enemyswordspd").innerHTML + ep.val['SPD'];
+      document.getElementById("enemytotalluk").innerHTML = document.getElementById("enemytotalluk").innerHTML - document.getElementById("enemyswordluk").innerHTML + ep.val['LUK'];
 
     document.getElementById("enemyswordimg").src = "../"+ep.val['img'];
       document.getElementById("enemyswordresult").src = "../"+ep.val['img'];
@@ -628,7 +627,7 @@ socket.on('ChangeShield',function(ep){
     document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("shieldatk").innerHTML + ep.val['ATK'];
     document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("shielddef").innerHTML + ep.val['DEF'];
     document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("shieldspd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("shieldluk").innerHTML + ep.val['LUK'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totalluk").innerHTML - document.getElementById("shieldluk").innerHTML + ep.val['LUK'];
 
    		document.getElementById("shieldimg").src = "../"+ep.val['img'];
    		document.getElementById("shieldresult").src = "../"+ep.val['img'];
@@ -641,11 +640,11 @@ socket.on('ChangeShield',function(ep){
    		document.getElementById("shieldeffect").innerHTML = ep.val['EFFECT'];
 	}
   else if(!hideEq){
-    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyshieldhp").innerHTML + ep.val['HP'];
-    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyshieldatk").innerHTML + ep.val['ATK'];
-    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyshielddef").innerHTML + ep.val['DEF'];
-    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyshieldspd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyshieldluk").innerHTML + ep.val['LUK'];
+      document.getElementById("enemytotalhp").innerHTML = document.getElementById("enemytotalhp").innerHTML - document.getElementById("enemyshieldhp").innerHTML + ep.val['HP'];
+      document.getElementById("enemytotalatk").innerHTML = document.getElementById("enemytotalatk").innerHTML - document.getElementById("enemyshieldatk").innerHTML + ep.val['ATK'];
+      document.getElementById("enemytotaldef").innerHTML = document.getElementById("enemytotaldef").innerHTML - document.getElementById("enemyshielddef").innerHTML + ep.val['DEF'];
+      document.getElementById("enemytotalspd").innerHTML = document.getElementById("enemytotalspd").innerHTML - document.getElementById("enemyshieldspd").innerHTML + ep.val['SPD'];
+      document.getElementById("enemytotalluk").innerHTML = document.getElementById("enemytotalluk").innerHTML - document.getElementById("enemyshieldluk").innerHTML + ep.val['LUK'];
 
     document.getElementById("enemyshieldimg").src = "../"+ep.val['img'];
       document.getElementById("enemyshieldresult").src = "../"+ep.val['img'];
@@ -659,13 +658,13 @@ socket.on('ChangeShield',function(ep){
   }
 });
 
-socket.on('ChangeFoot',function(ep){
+socket.on('ChangeBoots',function(ep){
 	if(GetCookie('data1') == ep.name){
     document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("foothp").innerHTML + ep.val['HP'];
     document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("footatk").innerHTML + ep.val['ATK'];
     document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("footdef").innerHTML + ep.val['DEF'];
     document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("footspd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("footluk").innerHTML + ep.val['LUK'];
+    document.getElementById("totalluk").innerHTML = document.getElementById("totalluk").innerHTML - document.getElementById("footluk").innerHTML + ep.val['LUK'];
 
    		document.getElementById("footimg").src = "../"+ep.val['img'];
    		document.getElementById("footresult").src = "../"+ep.val['img'];
@@ -678,11 +677,11 @@ socket.on('ChangeFoot',function(ep){
    		document.getElementById("footeffect").innerHTML = ep.val['EFFECT'];
 	}
   else if(!hideEq){
-    document.getElementById("totalhp").innerHTML = document.getElementById("totalhp").innerHTML - document.getElementById("enemyfoothp").innerHTML + ep.val['HP'];
-    document.getElementById("totalatk").innerHTML = document.getElementById("totalatk").innerHTML - document.getElementById("enemyfootatk").innerHTML + ep.val['ATK'];
-    document.getElementById("totaldef").innerHTML = document.getElementById("totaldef").innerHTML - document.getElementById("enemyfootdef").innerHTML + ep.val['DEF'];
-    document.getElementById("totalspd").innerHTML = document.getElementById("totalspd").innerHTML - document.getElementById("enemyfootspd").innerHTML + ep.val['SPD'];
-    document.getElementById("totalluk").innerHTML = document.getElementById("totaluk").innerHTML - document.getElementById("enemyfootluk").innerHTML + ep.val['LUK'];
+      document.getElementById("enemytotalhp").innerHTML = document.getElementById("enemytotalhp").innerHTML - document.getElementById("enemyfoothp").innerHTML + ep.val['HP'];
+      document.getElementById("enemytotalatk").innerHTML = document.getElementById("enemytotalatk").innerHTML - document.getElementById("enemyfootatk").innerHTML + ep.val['ATK'];
+      document.getElementById("enemytotaldef").innerHTML = document.getElementById("enemytotaldef").innerHTML - document.getElementById("enemyfootdef").innerHTML + ep.val['DEF'];
+      document.getElementById("enemytotalspd").innerHTML = document.getElementById("enemytotalspd").innerHTML - document.getElementById("enemyfootspd").innerHTML + ep.val['SPD'];
+      document.getElementById("enemytotalluk").innerHTML = document.getElementById("enemytotalluk").innerHTML - document.getElementById("enemyfootluk").innerHTML + ep.val['LUK'];
 
     document.getElementById("enemyfootimg").src = "../"+ep.val['img'];
       document.getElementById("enemyfootresult").src = "../"+ep.val['img'];
@@ -698,11 +697,11 @@ socket.on('ChangeFoot',function(ep){
 
 $(document).ready(function(){
 	$("#humanbtn").click(function(){
-	 	socket.emit('GachaHuman');
+	 	socket.emit('GachaMonster');
 	});
 
 	$("#headbtn").click(function(){
-		socket.emit('GachaHead');
+		socket.emit('GachaHelm');
 	});
 
 	$("#accebtn").click(function(){
@@ -710,11 +709,11 @@ $(document).ready(function(){
   	});
 
   	$("#bodybtn").click(function(){
-	 	socket.emit('GachaBody');
+  	    socket.emit('GachaArmor');
 	});
 
 	$("#swordbtn").click(function(){
-		socket.emit('GachaSword');
+		socket.emit('GachaWeapon');
  	});
 
 	$("#shieldbtn").click(function(){
@@ -722,7 +721,7 @@ $(document).ready(function(){
 	});
 
 	$("#footbtn").click(function(){
-	 	socket.emit('GachaFoot');
+	 	socket.emit('GachaBoots');
 	});
 });
 </script>

@@ -1,10 +1,10 @@
 <?php
 
-require_one('Gacha.php');
+require('Gacha.php');
 //----------------------------
 //データ準備
 //----------------------------
-$data = [
+$data = [[
 	['name'=>'太古の魔導書','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/weapon/book_003.png'],
 	['name'=>'魔術王の書','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/weapon/book_004.png'],
 	['name'=>'歴戦の戦斧','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/weapon/we_axe009.png'],
@@ -172,7 +172,7 @@ $data = [
 
 
 
-];
+]];
 
 $json = getGacha($data);
 

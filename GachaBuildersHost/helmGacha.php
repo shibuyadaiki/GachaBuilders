@@ -1,16 +1,16 @@
 <?php
 
-require_one('Gacha.php');
+require('Gacha.php');
 //----------------------------
 //データ準備
 //----------------------------
-$data = [
+$data = [[
 	['name'=>'パナギアの聖盾','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_001e.png'],
 	['name'=>'スラフェニクス','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_001l.png'],
 	['name'=>'神々しき帝王の盾','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_001q.png'],
 	['name'=>'聖黒竜の盾','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_002k.png'],
 	['name'=>'ベノムガントγ','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/gauntlet_006b.png'],
-].
+],
 [
 	['name'=>'聖十字の盾','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_003.png'],
 	['name'=>'ハードシールド','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_001r.png'],
@@ -59,7 +59,7 @@ $data = [
   ['name'=>'神々しき帝王の盾','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_001q.png'],
   ['name'=>'聖黒竜の盾','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_002k.png'],
   ['name'=>'ベノムガントγ','HP'=>0,'ATK'=>1,'DEF'=>0,'SPD'=>1,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/gauntlet_006b.png'],
-];
+]];
 
 $json = getGacha($data);
 

@@ -1,174 +1,173 @@
 var room = require('./room.js');
 
 function gameServer(spec, my) {
+    var ajax = require('ajax-lib');
     var app = spec.httpServer;
     var logLevel = spec.logLevel || 1;
     var io = require('socket.io').listen(app, {
         'log level' : logLevel
     });
 
+    var timeOutID60;
+    var timeOutID90;
+
+    var HasNull = function (socket) {
+        if (typeof socket.loginInfo === "undefined") return true;
+        return false;
+    }
+
     var mainRoom = room();
 
-
-    var hideEquip = function(){
-      io.sockets.in(0).emit('HideEquip');
+    var hideEquip = function (roomId) {
+        io.sockets.in(roomId).emit('HideEquip');
     };
-    setTimeout(hideEquip, 1000 * 60);
 
-    var onBattle = function(){
-      io.sockets.in(0).emit('OnBattle',mainRoom.doBattle());
+    var onBattle = function (roomId) {
+        mainRoom.doBattle(function (text) {
+            io.sockets.in(roomId).emit('BattleLog', text);
+            console.log(text);
+        },function (text) {
+            io.sockets.in(roomId).emit('OnBattle', text);
+            console.log(text);
+        });
     };
-    setTimeout(onBattle, 1000 * 90);
 
-    io.sockets.on('connection', function(socket) {
-        socket.on('EnterRoom',function(data){
+    var preurl = 'http://localhost:5900/GachaBuildersHost/';
+    var PlayGacha = function (socket, php, send, setfunc) {
+        if (HasNull(socket)) return;
+        ajax.get(preurl + php, function (err, json) {
+            if (err !== null) {
+                console.log(err);
+                return;
+            }
+            if (typeof json.body === "undefined") {
+                console.log('json.body = undefined');
+                return;
+            }
+            var roomId = socket.loginInfo.roomId;
+            var name = socket.loginInfo.name;
+            var eq = {
+                name: name,
+                val: JSON.parse(json.body)
+            };
+            setfunc(eq);
+            io.sockets.in(roomId).emit(send, eq);
+        });
+    };
+
+    //mainRoom.join('t');
+    //ajax.get('http://localhost:5900/GachaBuildersHost/acceGacha.php', function (err, json) {
+    //
+    //    var roomId = 0;
+    //    var name = 't';
+    //    var eq = {
+    //        name: name,
+    //        val: json.body
+    //    };
+    //    mainRoom.setWeapon(eq);
+    //    io.sockets.in(roomId).emit('ChangeWeapon', eq);
+    //    console.log('ChangeWeapon');
+    //});
+
+    io.sockets.on('connection', function (socket) {
+
+        socket.on('EnterRoom', function (data) {
+            if (mainRoom.isStartGame()) {
+                console.log('enterroom over');
+                return;
+            }
+            if (mainRoom.isGameEnd()) {
+                console.log('gameend');
+                return;
+            }
             var roomId = data.roomId;
             var name = data.name;
-            var loginInfo = {
-                roomId : roomId,
-                name : name
-            };
-            socket.set('loginInfo',loginInfo,function(){
+
+            if (HasNull(socket)) {
+                console.log('enter room');
+                console.log(name);
+                socket.loginInfo = {
+                    roomId: roomId,
+                    name: name
+                };
                 mainRoom.join(name);
                 socket.join(roomId);
-                if(mainRoom.isStartGame()){
-                    var ret = {
-                        players : mainRoom.getPlayers()
-                    };
-                    io.sockets.in(roomId).emit('GameStart', ret);
-                }
-            });
 
+                
+                //PlayGacha(socket, 'monsterGacha.php', 'ChangeMonster', function (eq) { mainRoom.setMonster(eq); });
+                //PlayGacha(socket, 'helmGacha.php', 'ChangeHelm', function (eq) { mainRoom.setHelm(eq); });
+                //PlayGacha(socket, 'armorGacha.php', 'ChangeArmor', function (eq) { mainRoom.setArmor(eq); });
+                //PlayGacha(socket, 'bootsGacha.php', 'ChangeBoots', function (eq) { mainRoom.setBoots(eq); });
+                //PlayGacha(socket, 'weaponGacha.php', 'ChangeWeapon', function (eq) { mainRoom.setWeapon(eq); });
+                //PlayGacha(socket, 'shieldGacha.php', 'ChangeShield', function (eq) { mainRoom.setShield(eq); });
+                //PlayGacha(socket, 'acceGacha.php', 'ChangeAcce', function (eq) { mainRoom.setAccessory(eq); });
+
+            } else {
+                console.log('rename faild');
+                return;
+            }
+            if (mainRoom.isStartGame()) {
+                var ret = {
+                    players: mainRoom.getPlayers()
+                };
+                io.sockets.in(roomId).emit('GameStart', ret);
+
+                timeOutID60 = setTimeout(hideEquip, 1000 * 60, roomId);
+                timeOutID90 = setTimeout(onBattle, 1000 * 30, roomId);
+            }
 
         });
 
-        socket.on('GachaMonster',function(){
-            socket.get('loginInfo',function(err,data){
-                var json = require('./monsterGacha.php');
-                var roomId = data.roomId;
-                var name = data.name;
-                var eq = {
-                    name : name,
-                    val : json
-                };
-                mainRoom.setHead(eq);
-                io.sockets.in(roomId).emit('ChangeMonster', eq);
-            });
+        socket.on('GachaMonster', function () {
+            PlayGacha(socket, 'monsterGacha.php', 'ChangeMonster', function (eq) { mainRoom.setMonster(eq); });
         });
-        socket.on('GachaHead',function(){
-            socket.get('loginInfo',function(err,data){
-                var json = require('./helmGacha.php');
-                var roomId = data.roomId;
-                var name = data.name;
-                var eq = {
-                    name : name,
-                    val : json
-                };
-                mainRoom.setHead(eq);
-                io.sockets.in(roomId).emit('ChangeHelm', eq);
-            });
+        socket.on('GachaHelm', function () {
+            PlayGacha(socket, 'helmGacha.php', 'ChangeHelm', function (eq) { mainRoom.setHelm(eq); });
         });
-        socket.on('GachaBody',function(){
-            socket.get('loginInfo',function(err,data){
-                var json = require('./armorGacha.php');
-                var roomId = data.roomId;
-                var name = data.name;
-                var eq = {
-                    name : name,
-                    val : json
-                };
-                mainRoom.setHead(eq);
-                io.sockets.in(roomId).emit('ChangeArmor', eq);
-            });
+        socket.on('GachaArmor', function () {
+            PlayGacha(socket, 'armorGacha.php', 'ChangeArmor', function (eq) { mainRoom.setArmor(eq); });
         });
-        socket.on('GachaHood',function(){
-            socket.get('loginInfo',function(err,data){
-                var json = require('./bootsGacha.php');
-                var roomId = data.roomId;
-                var name = data.name;
-                var eq = {
-                    name : name,
-                    val : json
-                };
-                mainRoom.setHead(eq);
-                io.sockets.in(roomId).emit('ChangeBoots', eq);
-            });
+        socket.on('GachaBoots',function(){
+            PlayGacha(socket, 'bootsGacha.php', 'ChangeBoots', function (eq) { mainRoom.setBoots(eq); });
         });
         socket.on('GachaWeapon',function(){
-            socket.get('loginInfo',function(err,data){
-
-                $.ajax({
-                  type: "POST",
-                  url: "./weaponGacha.php",
-                  cache: false,
-                  data: "",
-                  success: function(json){
-                    var roomId = data.roomId;
-                    var name = data.name;
-                    var eq = {
-                        name : name,
-                        val : json
-                    };
-                    mainRoom.setHead(eq);
-                    io.sockets.in(roomId).emit('ChangeWeapon', eq);
-                  }
-                });
-            });
+            PlayGacha(socket, 'weaponGacha.php', 'ChangeWeapon', function (eq) { mainRoom.setWeapon(eq); });
         });
         socket.on('GachaShield',function(){
-            socket.get('loginInfo',function(err,data){
-                var json = require('./shieldGacha.php');
-                var roomId = data.roomId;
-                var name = data.name;
-                var eq = {
-                    name : name,
-                    val : json
-                };
-                mainRoom.setHead(eq);
-                io.sockets.in(roomId).emit('ChangeShield', eq);
-            });
+            PlayGacha(socket, 'shieldGacha.php', 'ChangeShield', function (eq) { mainRoom.setShield(eq); });
         });
-        socket.on('GachaAccessory',function(){
-            socket.get('loginInfo',function(err,data){
-                var json = require('./acceGacha.php');
-                var roomId = data.roomId;
-                var name = data.name;
-                var eq = {
-                    name : name,
-                    val : json
-                };
-                mainRoom.setHead(eq);
-                io.sockets.in(roomId).emit('ChangeAcce', eq);
-            });
+        socket.on('GachaAcce', function () {
+            PlayGacha(socket, 'acceGacha.php', 'ChangeAcce', function (eq) { mainRoom.setAccessory(eq); });
         });
 
         socket.on('Battle',function(){
-            socket.get('loginInfo',function(err,data){
-                var roomId = data.roomId;
-                if(mainRoom.isStart()){
-
-                    var collback = function(text){
-                      io.sockets.in(roomId).emit('BattleLog', text);
-                    };
-                    var ret = mainRoom.doBattle(collback);
-                    io.sockets.in(roomId).emit('Result', ret);
-                }
-            });
+            if(mainRoom.isStart()){
+                onBattle(socket);
+            }
         });
 
-        socket.on('disconnect',function(data){
-            socket.get('loginInfo',function(err,data){
-                var roomId = data.roomId;
-                socket.leave(roomId);
-                var clients = io.sockets.clients(roomId);
-                if(clients.length === 0) {
+        socket.on('disconnect', function (data) {
+            if (HasNull(socket)) return;
+            var roomId = socket.loginInfo.roomId;
+            var winlog = socket.loginInfo.name +'Ç™ëﬁèoÅB';
+            //socket.leave(roomId);
+            //var clients = io.sockets.clients(roomId);
+            //console.log(clients);
+            mainRoom.leave(socket.loginInfo.name);
+
+            clearTimeout(timeOutID60);
+            clearTimeout(timeOutID90);
+            io.sockets.in(roomId).emit('OnBattle', winlog);
+            if (mainRoom.GetPlayerNum() === 0) {
                     mainRoom = room();
+                    console.log('room reset');
                 } else {
-                    for(var i in clients) {
-                        clients[i].disconnect();
-                    }
+                    //clients.disconnect();
+                    //for (var i in clients) {
+                    //    console.log(i);
+                    //   clients.disconnect();
+                    //}
                 }
-            });
         });
     });
 

@@ -3,9 +3,9 @@
 function getGacha($data){
 
 	$rare = rand(0,1000);
-	if($rare < 750){
+	if($rare < 100){
 		$rare = 0;
-	}else if($rare < 900){
+	}else if($rare < 350){
 		$rare = 1;
 	}else{
 		$rare = 2;
