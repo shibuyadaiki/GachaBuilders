@@ -58,6 +58,9 @@ function room() {
     that.isGameEnd = function () {
         return that.isEnd;
     };
+    that.getEquip = function (data) {
+        return equip;
+    };
 
     that.setMonster = function(data){
         var no = that.getPlayerNo(data.name);
@@ -112,9 +115,32 @@ function room() {
         text = name2 + 'の自動HP' + p2.regen + '回復で' + name2 + 'のHPが' + p2.hp + 'になった。';
         call(text);
     };
+    that.drain = function (p1, name1, p2, name2, call,damage) {
+        if (p2.drain === 0) return;
+        var text = '';
+        var d = damage * p2.drain;
+        p2.hp += d;
+        text = name2 + 'のドレインで' + d + '回復してHPが' + p2.hp + 'になった。';
+        call(text);
+    };
+
+    that.debuf = function (p1, name1, p2, name2, call) {
+        var text = '';
+        p2.dbf_slow *= 0.5;
+
+        if (p2.dbf_fire !== 0) {
+
+            p2.hp -= p2.dbf_fire;
+            text = name2 + 'が炎上で' + p2.dbf_fire + 'ダメージを受けてHPが' + p2.hp + 'になった。';
+            call(text);
+
+            p2.dbf_fire *= 0.5;
+        }
+    };
 
     that.nextTurn = function (p1, name1, p2, name2, call) {
-      that.regen(p1, name1, p2, name2, call);
+        that.regen(p1, name1, p2, name2, call);
+        that.debuf(p1, name1, p2, name2, call);
       var text='';
       var damageText = '攻撃';
       var cr = 1;
@@ -123,7 +149,7 @@ function room() {
         cr = 1.5;
         damageText = 'クリティカル攻撃';
       }
-      r = Math.random()
+      r = Math.random();
       if(r < p1._dogde){
           text = name1 + 'は攻撃を回避した！';
           call(text);
@@ -132,10 +158,27 @@ function room() {
           if (p2.armpen !== 0) {
               damageText = '防御貫通'+damageText;
           }
+          if (p2.add_fire !== 0) {
+              damageText = '炎の' + damageText;
+          }
+          if (p2.add_slow !== 0) {
+              damageText = '氷の' + damageText;
+          }
           text = name2 + 'が' + damage + 'ダメージの' + damageText + 'をして' + name1 + 'のHPが' + p1.hp + 'になった。';
           call(text);
 
+          that.drain(p1, name1, p2, name2, call, damage);
           that.mirror(p1, name1, p2, name2, call, damage);
+
+          p1.dbf_fire += p2.add_fire;
+          p1.dbf_slow += p2.add_slow;
+      }
+
+      r = Math.random();
+      if (r < p2._doble) {
+          text = name2 + 'の連続行動';
+          call(text);
+          that.nextTurn(p1, name1, p2, name2, call);
       }
 
     };
@@ -168,8 +211,8 @@ function room() {
             }];
         var id = setInterval(function () {
             turn++;
-            p1spd += p1.spd;
-            p2spd += p2.spd;
+            p1spd += Math.max(p1.spd - p1.dbf_slow, 1);
+            p2spd += Math.max(p2.spd - p2.dbf_slow, 1);
             if(p1spd == p2spd){
                 // 0 or 1
                 var r = Math.round( Math.random() ) ;
@@ -212,16 +255,67 @@ function room() {
         //    if (_p2.hp <= 0) break;
         //}
     };
+
+    //101-5攻撃、防御、スピード、運, x1.2, 全部 x1.1
+    //106-8クリUP
+    //109 反射10
+    //110 貫通25
+    //111 連続攻撃10
+    //112 回復5
+    //113 ドレイン20
+    //114 鈍足効果5
+    //115 炎上3
     that.addeffect = function (data, effect) {
         if (effect === 0) return;
-        if (effect === 1) {
+        else if (effect === 1) {
             data.armpen += 0.25;
         }
-        if (effect === 2) {
+        else if (effect === 2) {
             data.mirror += 0.1;
         }
-        if (effect === 3) {
+        else if (effect === 3) {
             data.regen += 5;
+        }
+        else if (effect === 101) {
+            data.satk += 0.2;
+        }
+        else if (effect === 102) {
+            data.sdef += 0.2;
+        }
+        else if (effect === 103) {
+            data.sspd += 0.2;
+        }
+        else if (effect === 104) {
+            data.sluck += 0.2;
+        }
+        else if (effect === 105) {
+            data.shp += 0.1;
+            data.satk += 0.1;
+            data.sdef += 0.1;
+            data.sspd += 0.1;
+            data.sluck += 0.1;
+        }
+
+        else if (effect === 109) {
+            data.mirror += 0.1;
+        }
+        else if (effect === 110) {
+            data.armpen += 0.25;
+        }
+        else if (effect === 111) {
+            data._doble += 0.1;
+        }
+        else if (effect === 112) {
+            data.regen += 5;
+        }
+        else if (effect === 113) {
+            data.drain += 0.2;
+        }
+        else if (effect === 114) {
+            data.add_slow += 5;
+        }
+        else if (effect === 115) {
+            data.add_fire += 3;
         }
     }
     that.eqT = function(equip){
@@ -234,25 +328,32 @@ function room() {
         luck:0,
         _cr:0,
         _dogde: 0,
+        _doble: 0,
 
         armpen: 0,
         mirror: 0,
         regen: 0,
+        drain: 0,
 
-        shp:0,
-        satk:0,
-        sdef:0,
-        sluck:0
+        add_slow: 0,
+        add_fire: 0,
+
+        dbf_slow:0,
+        dbf_fire:0,
+
+        shp:1,
+        satk:1,
+        sspd:1,
+        sdef:1,
+        sluck:1
       };
 
       for (var key in equip) {
         if (equip.hasOwnProperty(key)) {
             if(key == 'monster'){
-                //data.satk += equip[key].atk;
-                //data.sdef += equip[key].def;
-                //data.shp += equip[key].hp;
-                //data.sluck += equip[key].luck;
                 data.monster = equip[key].effect;
+            } else {
+                that.addeffect(data, equip[key].effect);
             }
             data.atk += equip[key].atk;
             data.def += equip[key].def;
@@ -260,18 +361,19 @@ function room() {
             data.hp += equip[key].hp;
             data.luck += equip[key].luck;
 
-            that.addeffect(data, equip[key].effect);
         }
       }
     data.hp = Math.max(data.hp,1);
     data.atk = Math.max(data.atk,0);
     data.def = Math.max(data.def,0);
     data.spd = Math.max(data.spd,1);
-    data.luck = Math.max(data.luck,0);
-      //data.atk *= data.satk;
-      //data.def *= data.sdef;
-      //data.hp *= data.shp;
-      //data.luck *= data.sluck;
+    data.luck = Math.max(data.luck, 0);
+
+    data.atk *= data.satk;
+    data.def *= data.sdef;
+    data.spd *= data.sspd;
+    data.hp *= data.shp;
+    data.luck *= data.sluck;
 
       if(data.monster === 0){
         data._cr = data.luck / 400.0;
