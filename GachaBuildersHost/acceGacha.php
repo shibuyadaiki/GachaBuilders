@@ -16,11 +16,13 @@ $data =[ [
   
 	['name'=>'鏡','HP'=>40,'ATK'=>0,'DEF'=>5,'SPD'=>5,'LUK'=>0,'EFFECT'=>119,'img'=>'GachaBuildersHost/GatyaResource/acce/4.gif'],
 	['name'=>'召喚獣','HP'=>50,'ATK'=>10,'DEF'=>0,'SPD'=>0,'LUK'=>0,'EFFECT'=>118,'img'=>'GachaBuildersHost/GatyaResource/acce/14.gif'],
-	['name'=>'お人形','HP'=>20,'ATK'=>-3,'DEF'=>-3,'SPD'=>-3,'LUK'=>-5,'EFFECT'=>123,'img'=>'GachaBuildersHost/GatyaResource/acce/8.gif'],
+	['name'=>'お人形','HP'=>-10,'ATK'=>-5,'DEF'=>-5,'SPD'=>-5,'LUK'=>-10,'EFFECT'=>123,'img'=>'GachaBuildersHost/GatyaResource/acce/8.gif'],
 	['name'=>'ポーション','HP'=>40,'ATK'=>0,'DEF'=>0,'SPD'=>0,'LUK'=>10,'EFFECT'=>121,'img'=>'GachaBuildersHost/GatyaResource/acce/10.gif']
 
 ],
 [
+	['name'=>'エグゾディアの右足','HP'=>1,'ATK'=>1,'DEF'=>1,'SPD'=>1,'LUK'=>1,'EFFECT'=>810,'img'=>'GachaBuildersHost/GatyaResource/acce/efr.png'],
+  
   ['name'=>'ブルーオーブ','HP'=>20,'ATK'=>0,'DEF'=>0,'SPD'=>0,'LUK'=>0,'EFFECT'=>109,'img'=>'GachaBuildersHost/GatyaResource/acce/acce_003.png'],
 	['name'=>'レッドオーブ','HP'=>20,'ATK'=>0,'DEF'=>0,'SPD'=>0,'LUK'=>0,'EFFECT'=>110,'img'=>'GachaBuildersHost/GatyaResource/acce/acce_003c.png'],
 	['name'=>'イエローオーブ','HP'=>20,'ATK'=>0,'DEF'=>0,'SPD'=>0,'LUK'=>0,'EFFECT'=>111,'img'=>'GachaBuildersHost/GatyaResource/acce/acce_003b.png'],

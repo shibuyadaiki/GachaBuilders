@@ -11,18 +11,19 @@
   <script src="js/jquery-3.1.1.min.js"></script>
   <script src="http://localhost:7777/socket.io/socket.io.js"></script>
 	<script>
-    var myName = '';
+        var myName = '';
         var socket = io.connect('localhost:7777');
-		$(document).ready(function(){
-			$("#gameStart").click(function(){
-				 myName = $("#nameId").val();
-				var data = {
-					roomId : 0,
-					name : myName
-				}
-        		socket.emit('EnterRoom',data);
-      		});
-		});
+        socket.emit('EnterViewRoom',0);
+		//$(document).ready(function(){
+		//	$("#gameStart").click(function(){
+		//		 myName = $("#nameId").val();
+		//		var data = {
+		//			roomId : 0,
+		//			name : myName
+		//		}
+        //		socket.emit('EnterViewRoom',data);
+      	//	});
+		//});
 </script>
 
 <title>Gacha Builders</title>
@@ -486,17 +487,11 @@ if(time == 0){
 socket.on('GameStart',function(ret){
 gameStart = true;
 timerId = setInterval(CountDown, 1000);
-if(myName == ret.players[0]){
+myName = ret.players[0];
 document.getElementById("enemyname").innerHTML = ret.players[1];
 document.getElementById("myname").innerHTML = ret.players[0];
-}
-else{
-document.getElementById("enemyname").innerHTML = ret.players[0];
-document.getElementById("myname").innerHTML = ret.players[1];
-}
 });
 socket.on('HideEquip',function(){
-hideEq = true;
 });
 socket.on('OnBattle',function(str){
 alert(str);
@@ -591,31 +586,24 @@ socket.on('ChangeBoots', function (ep) {
 
 $(document).ready(function(){
 $("#humanbtn").click(function(){
-  socket.emit('GachaMonster');
 });
 
 $("#headbtn").click(function(){
-  socket.emit('GachaHelm');
 });
 
 $("#accebtn").click(function(){
-  socket.emit('GachaAcce');
   });
 
   $("#bodybtn").click(function(){
-      socket.emit('GachaArmor');
 });
 
 $("#swordbtn").click(function(){
-  socket.emit('GachaWeapon');
 });
 
 $("#shieldbtn").click(function(){
-  socket.emit('GachaShield');
 });
 
 $("#footbtn").click(function(){
-  socket.emit('GachaBoots');
 });
 });
 

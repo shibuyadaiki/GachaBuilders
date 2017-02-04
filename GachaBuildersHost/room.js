@@ -95,9 +95,12 @@ function room() {
         return Math.round(f*10)/10;
     }
 
+    var col;
     that.damage = function (p1, p2, cr) {
         var def = p2.def - (p2.def * p1.armpen);
-        var d = (p1.atk * cr) - def;
+        def = 1 - (def / 400.0);
+        def = Math.max(def, 0.01);
+        var d = (p1.atk * cr) * def;
         d = Math.max(d, 1);
         d += p1.add_damage;
         d = that.floor(d);
@@ -111,14 +114,14 @@ function room() {
         d = that.floor(d);
         p2.hp -= d;
         text = '反射で「' + d + '」ダメージを受けた';
-        call(text);
+        call('<FONT color="#' + col + '">' + text);
     };
     that.regen = function (p1, p2, call) {
         if (p2.regen === 0) return;
         var text = '';
         p2.hp += p2.regen;
         text = '自動回復で「' + p2.regen + '」回復した';
-        call(text);
+        call('<FONT color="#' + col + '">' + text);
     };
     that.drain = function (p1, p2, call,damage) {
         if (p2.drain === 0) return;
@@ -127,7 +130,7 @@ function room() {
         d = that.floor(d);
         p2.hp += d;
         text = 'ドレインで「' + d + '」回復した';
-        call(text);
+        call('<FONT color="#' + col + '">' + text);
     };
 
     that.debuf = function (p1, p2, call) {
@@ -139,7 +142,7 @@ function room() {
 
             p2.hp -= p2.dbf_fire;
             text = '炎上で「' + p2.dbf_fire + '」ダメージを受けた';
-            call(text);
+            call('<FONT color="#' + col + '">' + text);
 
             p2.dbf_fire *= 0.5;
             p2.dbf_fire = that.floor(p2.dbf_fire);
@@ -147,47 +150,53 @@ function room() {
     };
 
     that.nextTurn = function (p1, p2, call) {
-        that.regen(p1, p2, call);
-        that.debuf(p1, p2, call);
-      var text='';
-      var damageText = '攻撃!';
-      var crText = '';
-      var cr = 1;
-      var r = Math.random();
-      if(r < p2._cr){
-        cr = 1.5;
-        crText = '☆クリティカル☆';
-      }
-      r = Math.random();
-      if(r < p1._dogde){
-          text = '攻撃を回避された';
-          call(text);
-      } else {
-          var damage = that.damage(p2, p1, cr);
-          if (p2.armpen !== 0) {
-              damageText = '防御貫通'+damageText;
-          }
-          if (p2.add_fire !== 0) {
-              damageText = '炎の' + damageText;
-          }
-          if (p2.add_slow !== 0) {
-              damageText = '氷の' + damageText;
-          }
-          text = crText + damageText + '「'+damage + '」ダメージを与えた';
-          call(text);
+        var maxattack = p2.add_attack + 1;
+        for (var i = 0; i < maxattack; i++) {
+            if (i >= 1) {
+                call('<FONT color="#' + col + '">' + '連続行動');
+            }
 
-          that.drain(p1, p2, call, damage);
-          that.mirror(p1, p2, call, damage);
+            that.regen(p1, p2, call);
+            that.debuf(p1, p2, call);
+            var text = '';
+            var damageText = '攻撃!';
+            var crText = '';
+            var cr = 1;
+            var r = Math.random();
+            if (r < p2._cr) {
+                cr = 1.5;
+                crText = '☆クリティカル☆';
+            }
+            r = Math.random();
+            if (r < p1._dogde) {
+                text = '攻撃を回避された';
+                call('<FONT color="#' + col + '">' + text);
+            } else {
+                var damage = that.damage(p2, p1, cr);
+                if (p2.armpen !== 0) {
+                    damageText = '防御貫通' + damageText;
+                }
+                if (p2.add_fire !== 0) {
+                    damageText = '炎の' + damageText;
+                }
+                if (p2.add_slow !== 0) {
+                    damageText = '氷の' + damageText;
+                }
+                text = crText + damageText + '「' + damage + '」ダメージを与えた';
+                call('<FONT color="#' + col + '">' + text);
 
-          p1.dbf_fire += p2.add_fire;
-          p1.dbf_slow += p2.add_slow;
-      }
+                that.drain(p1, p2, call, damage);
+                that.mirror(p1, p2, call, damage);
 
-      r = Math.random();
-      if (r < p2._doble) {
-          call('連続行動');
-          that.nextTurn(p1, p2, call);
-      }
+                p1.dbf_fire += p2.add_fire;
+                p1.dbf_slow += p2.add_slow;
+            }
+
+            r = Math.random();
+            if (r < p2._doble) {
+                maxattack++;
+            }
+        }
 
     };
     that.getWiner = function(_p1,_p2){
@@ -229,9 +238,14 @@ function room() {
         var actspd = Math.max(p1.spd, p2.spd);
         var p1spd = 0;
         var p2spd = 0;
-
         var startcall = function (no) {
-            call('############' + turn + 'T[' + inPlayers[no] + ']の行動############');
+            if (no == 0) {
+                col = 'cd5c5c';
+            } else {
+                col = '6495ed';
+            }
+
+            call('<FONT color="#' + col + '">############' + turn + 'T[' + inPlayers[no] + ']の行動############');
         }
 
         var subhp = function (hp, p1, p2) {
@@ -240,6 +254,8 @@ function room() {
             var s2 = p2.hp - hp.p2;
             var text1 = '';
             var text2 = '';
+            s1 = that.floor(s1);
+            s2 = that.floor(s2);
             if (s1 >= 0) {
                 text1 = '(+'+s1+')';
             } else {
@@ -251,9 +267,7 @@ function room() {
                 text2 = '(' + s2 + ')';
             }
 
-            s1 = that.floor(s1);
-            s2 = that.floor(s2);
-            call('[' + inPlayers[0] + '] HP:' + p1.hp+text1+' [' + inPlayers[1] + '] HP:' + p2.hp+text2);
+            call('[' + inPlayers[0] + '] HP:' + p1.hp + text1 + ' [' + inPlayers[1] + '] HP:' + p2.hp + text2);
         }
         var patk = [function(){
                 if(actspd <= p1spd){
@@ -287,12 +301,12 @@ function room() {
             }];
         var func = function () { return false;};
         battlelogid = setInterval(function () {
-            turn++;
             if (func()) {
                 func = function () { return false; };
                 that.isFinish(call, fincall, turn, p1, p2);
                 return;
             }
+            turn++;
             p1spd += Math.max(p1.spd - p1.dbf_slow, 1);
             p2spd += Math.max(p2.spd - p2.dbf_slow, 1);
             if(p1spd == p2spd){
@@ -446,6 +460,30 @@ function room() {
             data.regen += -5;
             data.drain += 0.2;
         }
+        else if (effect == 124) {
+            data.add_slow += 8;
+        }
+        else if (effect == 125) {
+            data.add_fire += 8;
+        }
+        else if (effect == 126) {
+            data.satk += 0.2;
+        }
+        else if (effect == 127) {
+            data.sspd += 0.2;
+        }
+        else if (effect === 210) {
+            data.add_attack += 1;
+        }
+        else if (effect === 211) {
+            data.sdef += 0.2;
+        }
+        else if (effect == 212) {
+            data.add_fire += 2;
+        }
+        else if (effect === 810) {
+            data.egz += 1;
+        }
     }
     that.eqT = function(equip){
       var data = {
@@ -464,12 +502,15 @@ function room() {
         regen: 0,
         drain: 0,
 
+        add_attack: 0,
         add_damage: 0,
         add_slow: 0,
         add_fire: 0,
 
         dbf_slow:0,
-        dbf_fire:0,
+        dbf_fire: 0,
+
+        egz:0,
 
         shp:1,
         satk:1,
@@ -505,23 +546,33 @@ function room() {
     data.hp *= data.shp;
     data.luck *= data.sluck;
 
+    if (data.egz >= 5) {
+
+        data.hp = 9999;
+        data.atk = 9999;
+        data.def = 9999;
+        data.spd = 9999;
+        data.luck = 9999;
+    }
+
       if(data.monster === 0){
-        data._cr = data.luck / 400.0;
-        data._dogde = data.luck / 400.0;
+        data._cr += data.luck / 400.0;
+        data._dogde += data.luck / 400.0;
       }else if(data.monster == 1){
 
-          data._cr = data.luck / 500.0;
-          data._dogde = data.luck / 200.0;
+          data._cr += data.luck / 500.0;
+          data._dogde += data.luck / 200.0;
       }else if(data.monster == 2){
 
-          data._cr = data.luck / 200.0;
-          data._dogde = data.luck / 500.0;
+          data._cr += data.luck / 200.0;
+          data._dogde += data.luck / 500.0;
       }else{
 
-          data._cr = data.luck / 300.0;
-          data._dogde = data.luck / 300.0;
+          data._cr += data.luck / 300.0;
+          data._dogde += data.luck / 300.0;
       }
 
+      data._dogde = Math.min(data._dogde, 0.95);
       return data;
     };
     that.doBattle = function (call, fincall) {

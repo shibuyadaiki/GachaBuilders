@@ -5,6 +5,7 @@ require('Gacha.php');
 //データ準備
 //----------------------------
 $data = [[
+	['name'=>'エグゾディアの頭','HP'=>1,'ATK'=>1,'DEF'=>1,'SPD'=>1,'LUK'=>1,'EFFECT'=>810,'img'=>'GachaBuildersHost/GatyaResource/helm/eh.png'],
 	['name'=>'リボン','HP'=>70,'ATK'=>0,'DEF'=>7,'SPD'=>0,'LUK'=>20,'EFFECT'=>112,'img'=>'GachaBuildersHost/GatyaResource/helm/16.gif'],
 	['name'=>'白面','HP'=>100,'ATK'=>4,'DEF'=>14,'SPD'=>4,'LUK'=>0,'EFFECT'=>0,'img'=>'GachaBuildersHost/GatyaResource/helm/13.gif'],
 	['name'=>'きつねのお面','HP'=>60,'ATK'=>0,'DEF'=>10,'SPD'=>10,'LUK'=>10,'EFFECT'=>111,'img'=>'GachaBuildersHost/GatyaResource/helm/14.gif'],

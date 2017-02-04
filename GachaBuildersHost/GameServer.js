@@ -117,9 +117,6 @@ function gameServer(spec, my) {
         else if (ef == 118) {
             eq.val.EFFECT_TEXT = '固定ダメ追加+8';
         }
-        else if (ef == 116) {
-            eq.val.EFFECT_TEXT = '固定ダメ追加+2';
-        }
         else if (ef == 119) {
             eq.val.EFFECT_TEXT = '反射+40%';
         }
@@ -135,7 +132,32 @@ function gameServer(spec, my) {
         else if (ef == 123) {
             eq.val.EFFECT_TEXT = '呪い';
         }
+        else if (ef == 124) {
+            eq.val.EFFECT_TEXT = '氷属性+8';
+        }
+        else if (ef == 125) {
+            eq.val.EFFECT_TEXT = '火属性+8';
+        }
+        else if (ef == 126) {
+            eq.val.EFFECT_TEXT = 'ATK x1.2';
+        }
+        else if (ef == 127) {
+            eq.val.EFFECT_TEXT = 'SPD x1.2';
+        }
 
+
+        else if (ef == 210) {
+            eq.val.EFFECT_TEXT = '行動回数+1';
+        }
+        else if (ef == 211) {
+            eq.val.EFFECT_TEXT = 'DEF x1.2';
+        }
+        else if (ef == 212) {
+            eq.val.EFFECT_TEXT = '火属性+2';
+        }
+        else if (ef == 810) {
+            eq.val.EFFECT_TEXT = '封印されしエグゾディア';
+        }
     };
     var ReloadEquip = function (e, send, name, roomId) {
 
@@ -151,7 +173,8 @@ function gameServer(spec, my) {
                 LUK: e.luck,
                 RARE: e.rare,
                 EFFECT: e.effect
-            }
+            },
+            force:true
         };
         addEffectText(eq);
         io.sockets.in(roomId).emit(send, eq);
@@ -176,7 +199,8 @@ function gameServer(spec, my) {
     var preurl = 'http://localhost:5900/GachaBuildersHost/';
     var PlayGacha = function (socket, php, send, setfunc) {
         if (HasNull(socket)) return;
-        if(mainRoom.isGameEnd())return;
+        if (mainRoom.isGameEnd()) return;
+        if (!mainRoom.isStartGame()) return;
         ajax.get(preurl + php, function (err, json) {
             if (err !== null) {
                 console.log(err);
@@ -190,7 +214,8 @@ function gameServer(spec, my) {
             var name = socket.loginInfo.name;
             var eq = {
                 name: name,
-                val: JSON.parse(json.body)
+                val: JSON.parse(json.body),
+                force:false
             };
             addEffectText(eq);
             setfunc(eq);
@@ -198,7 +223,7 @@ function gameServer(spec, my) {
         });
     };
 
-    var PlayGachaInit = function (roomId, php, send, setfunc) {
+    var PlayGachaInit = function (roomId) {
 
         var player = mainRoom.getPlayers();
         var p1 = {
@@ -246,6 +271,9 @@ function gameServer(spec, my) {
     //});
 
     io.sockets.on('connection', function (socket) {
+        socket.on('EnterViewRoom', function (roomId) {
+            socket.join(roomId);
+        });
 
         socket.on('EnterRoom', function (data) {
             if (mainRoom.isStartGame()) {
@@ -279,7 +307,7 @@ function gameServer(spec, my) {
                 };
                 io.sockets.in(roomId).emit('GameStart', ret);
 
-                PlayGachaInit();
+                PlayGachaInit(roomId);
 
                 timeOutID60 = setTimeout(hideEquip, 1000 * 60, roomId);
                 timeOutID90 = setTimeout(onBattle, 1000 * 90, roomId);
