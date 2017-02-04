@@ -44,6 +44,11 @@ function gameServer(spec, my) {
     //113 ドレイン20
     //114 鈍足効果5
     //115 炎上3
+    //116-8 固定ダメ追加 2 4 8
+    //119 反射 40
+    //120-1 自動回復 2 8
+    //122 回避アップ 15
+    //123 呪い
     var addEffectText = function (eq) {
         var ef = eq.val.EFFECT;
         if(ef == 0){
@@ -59,19 +64,19 @@ function gameServer(spec, my) {
             eq.val.EFFECT_TEXT = '自動回復+5';
         }
         else if (ef == 101) {
-            eq.val.EFFECT_TEXT = 'ATK x1.2';
+            eq.val.EFFECT_TEXT = 'ATK x1.4';
         }
         else if (ef == 102) {
-            eq.val.EFFECT_TEXT = 'DEF x1.2';
+            eq.val.EFFECT_TEXT = 'DEF x1.4';
         }
         else if (ef == 103) {
-            eq.val.EFFECT_TEXT = 'SPD x1.2';
+            eq.val.EFFECT_TEXT = 'SPD x1.4';
         }
         else if (ef == 104) {
-            eq.val.EFFECT_TEXT = 'LUK x1.2';
+            eq.val.EFFECT_TEXT = 'LUK x1.4';
         }
         else if (ef == 105) {
-            eq.val.EFFECT_TEXT = '全能力 x1.1';
+            eq.val.EFFECT_TEXT = '全能力 x1.2';
         }
         else if (ef == 106) {
             eq.val.EFFECT_TEXT = 'クリティカル+5%';
@@ -83,7 +88,7 @@ function gameServer(spec, my) {
             eq.val.EFFECT_TEXT = 'クリティカル+15%';
         }
         else if(ef == 109){
-            eq.val.EFFECT_TEXT = '反射+10%';
+            eq.val.EFFECT_TEXT = '反射+20%';
         }
         else if (ef == 110) {
             eq.val.EFFECT_TEXT = '防御貫通+25%';
@@ -101,9 +106,35 @@ function gameServer(spec, my) {
             eq.val.EFFECT_TEXT = '氷属性+5';
         }
         else if (ef == 115) {
-            eq.val.EFFECT_TEXT = '火属性+3';
+            eq.val.EFFECT_TEXT = '火属性+5';
         }
-
+        else if (ef == 116) {
+            eq.val.EFFECT_TEXT = '固定ダメ追加+2';
+        }
+        else if (ef == 117) {
+            eq.val.EFFECT_TEXT = '固定ダメ追加+4';
+        }
+        else if (ef == 118) {
+            eq.val.EFFECT_TEXT = '固定ダメ追加+8';
+        }
+        else if (ef == 116) {
+            eq.val.EFFECT_TEXT = '固定ダメ追加+2';
+        }
+        else if (ef == 119) {
+            eq.val.EFFECT_TEXT = '反射+40%';
+        }
+        else if (ef == 120) {
+            eq.val.EFFECT_TEXT = '自動回復+2';
+        }
+        else if (ef == 121) {
+            eq.val.EFFECT_TEXT = '自動回復+8';
+        }
+        else if (ef == 122) {
+            eq.val.EFFECT_TEXT = '回避+15%';
+        }
+        else if (ef == 123) {
+            eq.val.EFFECT_TEXT = '呪い';
+        }
 
     };
     var ReloadEquip = function (e, send, name, roomId) {
@@ -118,6 +149,7 @@ function gameServer(spec, my) {
                 DEF: e.def,
                 SPD: e.spd,
                 LUK: e.luck,
+                RARE: e.rare,
                 EFFECT: e.effect
             }
         };
