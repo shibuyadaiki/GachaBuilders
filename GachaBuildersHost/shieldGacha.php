@@ -43,7 +43,7 @@ $data = [[
   ['name'=>'ルビーシールド','HP'=>35,'ATK'=>15,'DEF'=>25,'SPD'=>5,'LUK'=>15,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_002h.png'],
   ['name'=>'サファイアシールド','HP'=>35,'ATK'=>5,'DEF'=>25,'SPD'=>15,'LUK'=>15,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_002l.png'],
   ['name'=>'クライゴーストシールド','HP'=>40,'ATK'=>10,'DEF'=>50,'SPD'=>15,'LUK'=>-15,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_002k.png'],
-  ['name'=>'ゴアの盾','HP'=50,'ATK'=>20,'DEF'=>50,'SPD'=>-5,'LUK'=>0,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_002i.png'],
+  ['name'=>'ゴアの盾','HP'=>50,'ATK'=>20,'DEF'=>50,'SPD'=>-5,'LUK'=>0,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_002i.png'],
   ['name'=>'アメフトシールド','HP'=>40,'ATK'=>20,'DEF'=>35,'SPD'=>25,'LUK'=>5,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_002e.png'],
   ['name'=>'メタルシールド','HP'=>30,'ATK'=>1,'DEF'=>30,'SPD'=>50,'LUK'=>20,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/shield/shield_004.png'],
 ]];
