@@ -26,6 +26,7 @@ $data = [[
 	['name'=>'攻撃的なハイヒール','HP'=>0,'ATK'=>22,'DEF'=>0,'SPD'=>57,'LUK'=>0,'EFFECT'=>101,'img'=>'GachaBuildersHost/res/foot/boots_010.png'],
 	['name'=>'魅惑のハイサイブーツ','HP'=>0,'ATK'=>0,'DEF'=>0,'SPD'=>56,'LUK'=>12,'EFFECT'=>101,'img'=>'GachaBuildersHost/res/foot/boots_010.png'],
 	['name'=>'ゴキブリを潰すスリッパ','HP'=>0,'ATK'=>30,'DEF'=>0,'SPD'=>50,'LUK'=>0,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/foot/boots_011.png'],
+	['name'=>'エグゾディアの左足','HP'=>1,'ATK'=>1,'DEF'=>1,'SPD'=>1,'LUK'=>1,'EFFECT'=>810,'img'=>'GachaBuildersHost/res/foot/efl.png'],
 	
 ],
 [
@@ -45,7 +46,7 @@ $data = [[
 	['name'=>'ユーエヌケーオー','HP'=>0,'ATK'=>-999,'DEF'=>-999,'SPD'=>-999,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/foot/boots_007.png'],
 	['name'=>'猟兵の足袋','HP'=>0,'ATK'=>3,'DEF'=>0,'SPD'=>10,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/foot/boots_008.png'],
 	['name'=>'なにかの皮','HP'=>0,'ATK'=>0,'DEF'=>0,'SPD'=>20,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/foot/boots_005.png'],
-	['name'=>'レザーヒール','HP'=>0,'ATK'=>2,'DEF'=>2'SPD'=>-4,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/foot/boots_005.png'],
+	['name'=>'レザーヒール','HP'=>0,'ATK'=>2,'DEF'=>2,'SPD'=>-4,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/foot/boots_005.png'],
 	['name'=>'青銅のブーツ','HP'=>0,'ATK'=>2,'DEF'=>2,'SPD'=>-12,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/foot/boots_004b.png'],
 	['name'=>'旅人の靴','HP'=>10,'ATK'=>0,'DEF'=>0,'SPD'=>12,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/foot/boots_008.png'],
 	['name'=>'道端の雑草','HP'=>-5,'ATK'=>0,'DEF'=>0,'SPD'=>14,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/res/foot/boots_003.png'],
