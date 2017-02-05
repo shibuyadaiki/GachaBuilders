@@ -28,9 +28,11 @@ function gameServer(spec, my) {
         mainRoom.doBattle(function (text) {
             io.sockets.in(roomId).emit('BattleLog', text);
             console.log(text);
-        },function (text) {
-            io.sockets.in(roomId).emit('OnBattle', text);
-            console.log(text);
+        },function () {
+            //io.sockets.in(roomId).emit('OnBattle', text);
+            io.sockets.in(roomId).emit('Leave');
+            console.log('room reset');
+            mainRoom = room();
         });
     };
 
@@ -88,7 +90,7 @@ function gameServer(spec, my) {
             eq.val.EFFECT_TEXT = 'クリティカル+15%';
         }
         else if(ef == 109){
-            eq.val.EFFECT_TEXT = '反射+20%';
+            eq.val.EFFECT_TEXT = '反射+15%';
         }
         else if (ef == 110) {
             eq.val.EFFECT_TEXT = '防御貫通+25%';
@@ -97,7 +99,7 @@ function gameServer(spec, my) {
             eq.val.EFFECT_TEXT = '連続攻撃+10%';
         }
         else if (ef == 112) {
-            eq.val.EFFECT_TEXT = '自動回復+5';
+            eq.val.EFFECT_TEXT = '自動回復+8';
         }
         else if (ef == 113) {
             eq.val.EFFECT_TEXT = 'ドレイン+20%';
@@ -109,22 +111,22 @@ function gameServer(spec, my) {
             eq.val.EFFECT_TEXT = '火属性+5';
         }
         else if (ef == 116) {
-            eq.val.EFFECT_TEXT = '固定ダメ追加+2';
+            eq.val.EFFECT_TEXT = '固定ダメ追加+5';
         }
         else if (ef == 117) {
-            eq.val.EFFECT_TEXT = '固定ダメ追加+4';
+            eq.val.EFFECT_TEXT = '固定ダメ追加+10';
         }
         else if (ef == 118) {
-            eq.val.EFFECT_TEXT = '固定ダメ追加+8';
+            eq.val.EFFECT_TEXT = '固定ダメ追加+20';
         }
         else if (ef == 119) {
-            eq.val.EFFECT_TEXT = '反射+40%';
+            eq.val.EFFECT_TEXT = '反射+30%';
         }
         else if (ef == 120) {
-            eq.val.EFFECT_TEXT = '自動回復+2';
+            eq.val.EFFECT_TEXT = '自動回復+4';
         }
         else if (ef == 121) {
-            eq.val.EFFECT_TEXT = '自動回復+8';
+            eq.val.EFFECT_TEXT = '自動回復+16';
         }
         else if (ef == 122) {
             eq.val.EFFECT_TEXT = '回避+15%';
@@ -133,10 +135,10 @@ function gameServer(spec, my) {
             eq.val.EFFECT_TEXT = '呪い';
         }
         else if (ef == 124) {
-            eq.val.EFFECT_TEXT = '氷属性+8';
+            eq.val.EFFECT_TEXT = '氷属性+10';
         }
         else if (ef == 125) {
-            eq.val.EFFECT_TEXT = '火属性+8';
+            eq.val.EFFECT_TEXT = '火属性+10';
         }
         else if (ef == 126) {
             eq.val.EFFECT_TEXT = 'ATK x1.2';
@@ -144,7 +146,39 @@ function gameServer(spec, my) {
         else if (ef == 127) {
             eq.val.EFFECT_TEXT = 'SPD x1.2';
         }
-
+        else if (ef == 128) {
+            eq.val.EFFECT_TEXT = 'ドレイン+10%';
+        }
+        else if (ef == 129) {
+            eq.val.EFFECT_TEXT = 'ドレイン+15%';
+        }
+        else if (ef == 130) {
+            eq.val.EFFECT_TEXT = '防御貫通+5%';
+        }
+        else if (ef == 131) {
+            eq.val.EFFECT_TEXT = '防御貫通+15%';
+        }
+        else if (ef == 132) {
+            eq.val.EFFECT_TEXT = '回避+5%';
+        }
+        else if (ef == 133) {
+            eq.val.EFFECT_TEXT = '回避+10%';
+        }
+        else if (ef == 134) {
+            eq.val.EFFECT_TEXT = '氷属性+2';
+        }
+        else if (ef == 135) {
+            eq.val.EFFECT_TEXT = '毒+10%';
+        }
+        else if (ef == 136) {
+            eq.val.EFFECT_TEXT = '毒+25%';
+        }
+        else if (ef == 137) {
+            eq.val.EFFECT_TEXT = '毒+50%';
+        }
+        else if (ef == 138) {
+            eq.val.EFFECT_TEXT = 'HP x1.2';
+        }
 
         else if (ef == 210) {
             eq.val.EFFECT_TEXT = '行動回数+1';
@@ -156,7 +190,7 @@ function gameServer(spec, my) {
             eq.val.EFFECT_TEXT = '火属性+2';
         }
         else if (ef == 810) {
-            eq.val.EFFECT_TEXT = '封印されしエグゾディア';
+            eq.val.EFFECT_TEXT = '封印されし';
         }
     };
     var ReloadEquip = function (e, send, name, roomId) {
@@ -275,9 +309,14 @@ function gameServer(spec, my) {
             socket.join(roomId);
         });
 
-        socket.on('EnterRoom', function (data) {
+        socket.on('EnterRoom', function (roomId) {
+            socket.join(roomId);
+
+        });
+
+        socket.on('GameEntry', function (data) {
             if (mainRoom.isStartGame()) {
-                console.log('enterroom over');
+                console.log('GameEntry over');
                 return;
             }
             if (mainRoom.isGameEnd()) {
@@ -288,29 +327,33 @@ function gameServer(spec, my) {
             var name = data.name;
 
             if (HasNull(socket)) {
-                console.log('enter room');
-                console.log(name);
+                console.log('GameEntry ' + name);
                 socket.loginInfo = {
                     roomId: roomId,
                     name: name
                 };
                 mainRoom.join(name);
-                socket.join(roomId);
+
+
+                io.sockets.in(roomId).emit('BattleLog', '「' + name + '」さんがゲームにエントリー');
 
             } else {
                 console.log('rename faild');
                 return;
             }
             if (mainRoom.isStartGame()) {
+                var _hidetime = 60;
+                var _time = 90;
                 var ret = {
-                    players: mainRoom.getPlayers()
+                    players: mainRoom.getPlayers(),
+                    gameTime: _time
                 };
                 io.sockets.in(roomId).emit('GameStart', ret);
 
                 PlayGachaInit(roomId);
 
-                timeOutID60 = setTimeout(hideEquip, 1000 * 60, roomId);
-                timeOutID90 = setTimeout(onBattle, 1000 * 90, roomId);
+                timeOutID60 = setTimeout(hideEquip, 1000 * _hidetime, roomId);
+                timeOutID90 = setTimeout(onBattle, 1000 * _time, roomId);
             }
 
         });
@@ -343,10 +386,15 @@ function gameServer(spec, my) {
             }
         });
 
+        socket.on('Leave', function (data) {
+            if (HasNull(socket)) return;
+            delete socket.loginInfo;
+        });
+
         socket.on('disconnect', function (data) {
             if (HasNull(socket)) return;
             var roomId = socket.loginInfo.roomId;
-            var winlog = socket.loginInfo.name +'が退出しました';
+            var winlog = '「'+socket.loginInfo.name +'」さんが退出しました';
             //socket.leave(roomId);
             //var clients = io.sockets.clients(roomId);
             //console.log(clients);
@@ -354,7 +402,8 @@ function gameServer(spec, my) {
 
             clearTimeout(timeOutID60);
             clearTimeout(timeOutID90);
-            io.sockets.in(roomId).emit('OnBattle', winlog);
+            io.sockets.in(roomId).emit('BattleLog', winlog);
+            //io.sockets.in(roomId).emit('OnBattle', winlog);
             if (mainRoom.GetPlayerNum() === 0) {
                     mainRoom = room();
                     console.log('room reset');

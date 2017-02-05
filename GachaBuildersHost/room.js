@@ -3,6 +3,9 @@ var equipdata = require('./EquipEncode.js');
 function room() {
     var that = {};
     var inPlayers = [];
+    var playerColor = ['<span style="color:#cd5c5c;">', '<span style="color:#6495ed;">'];
+    var damageColor = '<span style="color:#D72323;">';
+    var healColor = '<span style="color:#A6ED8E;">';
 
     var playerData = [];
     that.isEnd = false;
@@ -95,12 +98,43 @@ function room() {
         return Math.round(f*10)/10;
     }
 
-    var col;
+    that.NumText = function (f) {
+        
+        if (f == 0) {
+            return '<span style="color:">' + f + '</span>';
+        } else if (f > 0) {
+            return damageColor + f + '</span>';
+        } else {
+            return healColor + f + '</span>';
+        }
+    }
+    that.NumTextR = function (f) {
+
+        if (f == 0) {
+            return '<span style="color:">' + f + '</span>';
+        } else if (f < 0) {
+            return damageColor + f + '</span>';
+        } else {
+            return healColor + f + '</span>';
+        }
+    }
+    that.NumTextHP = function (f) {
+        if (f == 0) {
+            return '(+'+ f+')';
+        } else if (f < 0) {
+            return '(' + damageColor + f + '</span>)';
+        } else {
+            return '(' + healColor + '+' + f + '</span>)';
+        }
+    }
+    var pcolor = '';
+
     that.damage = function (p1, p2, cr) {
-        var def = p2.def - (p2.def * p1.armpen);
-        def = 1 - (def / 400.0);
+        var def = p2.def - ((p2.def-100) * p1.armpen);
+        var cut = def / 15.0;
+        def = 1 - (def / 500.0);
         def = Math.max(def, 0.01);
-        var d = (p1.atk * cr) * def;
+        var d = ((p1.atk * cr * 0.5) * def) - cut;
         d = Math.max(d, 1);
         d += p1.add_damage;
         d = that.floor(d);
@@ -113,15 +147,15 @@ function room() {
         var d = damage * p1.mirror;
         d = that.floor(d);
         p2.hp -= d;
-        text = '反射で「' + d + '」ダメージを受けた';
-        call('<FONT color="#' + col + '">' + text);
+        text = '反射で「' + that.NumText(d) + '」ダメージを受けた';
+        call(pcolor + text);
     };
     that.regen = function (p1, p2, call) {
         if (p2.regen === 0) return;
         var text = '';
         p2.hp += p2.regen;
-        text = '自動回復で「' + p2.regen + '」回復した';
-        call('<FONT color="#' + col + '">' + text);
+        text = '自動回復で「' + that.NumTextR(p2.regen) + '」回復した';
+        call(pcolor + text);
     };
     that.drain = function (p1, p2, call,damage) {
         if (p2.drain === 0) return;
@@ -129,23 +163,29 @@ function room() {
         var d = damage * p2.drain;
         d = that.floor(d);
         p2.hp += d;
-        text = 'ドレインで「' + d + '」回復した';
-        call('<FONT color="#' + col + '">' + text);
+        text = 'ドレインで「' + that.NumTextR(d) + '」回復した';
+        call(pcolor + text);
     };
 
     that.debuf = function (p1, p2, call) {
         var text = '';
-        p2.dbf_slow *= 0.5;
+        p2.dbf_slow *= 0.8;
         p2.dbf_slow = that.floor(p2.dbf_slow);
 
         if (p2.dbf_fire !== 0) {
 
             p2.hp -= p2.dbf_fire;
-            text = '炎上で「' + p2.dbf_fire + '」ダメージを受けた';
-            call('<FONT color="#' + col + '">' + text);
+            text = '炎上で「' + that.NumText(p2.dbf_fire) + '」ダメージを受けた';
+            call(pcolor + text);
 
             p2.dbf_fire *= 0.5;
             p2.dbf_fire = that.floor(p2.dbf_fire);
+        }
+        if (p2.dbf_poison_t !== 0) {
+            p2.dbf_poison_t--;
+            p2.hp -= p2.dbf_poison;
+            text = '毒で「' + that.NumText(p2.dbf_poison) + '」ダメージを受けた(残り' + p2.dbf_poison_t + 'T)';
+            call(pcolor + text);
         }
     };
 
@@ -153,7 +193,7 @@ function room() {
         var maxattack = p2.add_attack + 1;
         for (var i = 0; i < maxattack; i++) {
             if (i >= 1) {
-                call('<FONT color="#' + col + '">' + '連続行動');
+                call(pcolor + '連続行動');
             }
 
             that.regen(p1, p2, call);
@@ -164,13 +204,13 @@ function room() {
             var cr = 1;
             var r = Math.random();
             if (r < p2._cr) {
-                cr = 1.5;
+                cr = 1.25;
                 crText = '☆クリティカル☆';
             }
             r = Math.random();
             if (r < p1._dogde) {
                 text = '攻撃を回避された';
-                call('<FONT color="#' + col + '">' + text);
+                call(pcolor + text);
             } else {
                 var damage = that.damage(p2, p1, cr);
                 if (p2.armpen !== 0) {
@@ -182,8 +222,19 @@ function room() {
                 if (p2.add_slow !== 0) {
                     damageText = '氷の' + damageText;
                 }
-                text = crText + damageText + '「' + damage + '」ダメージを与えた';
-                call('<FONT color="#' + col + '">' + text);
+                if (p2.poison !== 0) {
+                    damageText = '毒の' + damageText;
+                }
+                text = crText + damageText + '「' + that.NumText(damage) + '」ダメージを与えた';
+                call(pcolor+text);
+
+                r = Math.random();
+                if (r < p2.poison) {
+                    p1.dbf_poison_t = 3;
+                    p1.dbf_poison += damage * 0.1 + p1.hp * 0.025;
+                    p1.dbf_poison = that.floor(p1.dbf_poison);
+                    call(pcolor + '毒を付与した');
+                }
 
                 that.drain(p1, p2, call, damage);
                 that.mirror(p1, p2, call, damage);
@@ -223,12 +274,12 @@ function room() {
         }
         if (end) {
             call('############ゲーム終了############');
-            call('[' + inPlayers[0] + '] HP:' + p1.hp);
-            call('[' + inPlayers[1] + '] HP:' + p2.hp);
+            call(playerColor[0] + '[' + inPlayers[0] + '] HP:' + p1.hp);
+            call(playerColor[1] + '[' + inPlayers[1] + '] HP:' + p2.hp);
             clearInterval(battlelogid);
             var name = that.getWiner(p1, p2);
             call(name);
-            //fincall(name);
+            fincall();
         }
         return end;
     };
@@ -239,13 +290,8 @@ function room() {
         var p1spd = 0;
         var p2spd = 0;
         var startcall = function (no) {
-            if (no == 0) {
-                col = 'cd5c5c';
-            } else {
-                col = '6495ed';
-            }
-
-            call('<FONT color="#' + col + '">############' + turn + 'T[' + inPlayers[no] + ']の行動############');
+            pcolor = playerColor[no];
+            call(playerColor[no]+'############' + turn + 'T[' + inPlayers[no] + ']の行動############');
         }
 
         var subhp = function (hp, p1, p2) {
@@ -256,18 +302,10 @@ function room() {
             var text2 = '';
             s1 = that.floor(s1);
             s2 = that.floor(s2);
-            if (s1 >= 0) {
-                text1 = '(+'+s1+')';
-            } else {
-                text1 = '(' + s1 + ')';
-            }
-            if (s2 >= 0) {
-                text2 = '(+' + s2 + ')';
-            } else {
-                text2 = '(' + s2 + ')';
-            }
+            text1 = that.NumTextHP(s1);
+            text2 = that.NumTextHP(s2);
 
-            call('[' + inPlayers[0] + '] HP:' + p1.hp + text1 + ' [' + inPlayers[1] + '] HP:' + p2.hp + text2);
+            call('</span>[' + playerColor[0] + inPlayers[0] + '</span>] HP:' + p1.hp + text1 + ' [' + playerColor[1] + inPlayers[1] + '</span>] HP:' + p2.hp + text2);
         }
         var patk = [function(){
                 if(actspd <= p1spd){
@@ -301,12 +339,12 @@ function room() {
             }];
         var func = function () { return false;};
         battlelogid = setInterval(function () {
+            turn++;
             if (func()) {
                 func = function () { return false; };
                 that.isFinish(call, fincall, turn, p1, p2);
                 return;
             }
-            turn++;
             p1spd += Math.max(p1.spd - p1.dbf_slow, 1);
             p2spd += Math.max(p2.spd - p2.dbf_slow, 1);
             if(p1spd == p2spd){
@@ -324,7 +362,7 @@ function room() {
                 if (p1spd > p2spd) {
 
                     func = function () {
-                        return patk[1];
+                        return patk[1]();
                     }
                     if (!patk[0]()) {
                         func();
@@ -333,7 +371,7 @@ function room() {
                 } else {
 
                     func = function () {
-                        return patk[0];
+                        return patk[0]();
                     }
                     if (!patk[1]()) {
                         func();
@@ -409,7 +447,7 @@ function room() {
             data._cr += 0.15;
         }
         else if (effect === 109) {
-            data.mirror += 0.2;
+            data.mirror += 0.15;
         }
         else if (effect === 110) {
             data.armpen += 0.25;
@@ -418,7 +456,7 @@ function room() {
             data._doble += 0.1;
         }
         else if (effect === 112) {
-            data.regen += 5;
+            data.regen += 8;
         }
         else if (effect === 113) {
             data.drain += 0.2;
@@ -430,47 +468,82 @@ function room() {
             data.add_fire += 5;
         }
         else if (effect === 116) {
-            data.add_damage += 2;
+            data.add_damage += 5;
         }
         else if (effect === 117) {
-            data.add_damage += 4;
+            data.add_damage += 10;
         }
         else if (effect === 118) {
-            data.add_damage += 8;
+            data.add_damage += 20;
         }
         else if (effect === 119) {
-            data.mirror += 0.4;
+            data.mirror += 0.3;
         }
         else if (effect === 120) {
-            data.regen += 2;
+            data.regen += 4;
         }
         else if (effect === 121) {
-            data.regen += 8;
+            data.regen += 16;
         }
         else if (effect === 122) {
             data._dogde += 0.15;
         }
         else if (effect === 123) {
-            data._cr += 0.5;
+            data._cr += 0.25;
+            data._dogde -= 1;
             data.add_fire += 5;
             data.add_slow += 5;
+            data.poison += 0.25;
             data.add_damage += 5;
-            data.armpen += 0.2;
-            data.mirror += 0.2;
-            data.regen += -5;
-            data.drain += 0.2;
+            data.armpen += 0.1;
+            data.mirror += 0.1;
+            data.regen += -8;
+            data.drain += 0.1;
         }
         else if (effect == 124) {
-            data.add_slow += 8;
+            data.add_slow += 10;
         }
         else if (effect == 125) {
-            data.add_fire += 8;
+            data.add_fire += 10;
         }
         else if (effect == 126) {
             data.satk += 0.2;
         }
         else if (effect == 127) {
             data.sspd += 0.2;
+        }
+        else if (effect == 128) {
+            data.drain += 0.1;
+        }
+        else if (effect == 129) {
+            data.drain += 0.15;
+        }
+        else if (effect == 130) {
+            data.armpen += 0.05;
+        }
+        else if (effect == 131) {
+            data.armpen += 0.15;
+        }
+        else if (effect == 132) {
+            data._dogde += 0.05;
+        }
+        else if (effect == 133) {
+            data._dogde += 0.10;
+        }
+        else if (effect == 134) {
+            data.add_slow += 2;
+        }
+        else if (effect == 135) {
+            data.poison += 0.1;
+        }
+        else if (effect == 136) {
+            data.poison += 0.25;
+        }
+        else if (effect == 137) {
+            data.poison += 0.5;
+        }
+        else if (effect == 138) {
+            data.shp += 0.2;
         }
         else if (effect === 210) {
             data.add_attack += 1;
@@ -501,6 +574,7 @@ function room() {
         mirror: 0,
         regen: 0,
         drain: 0,
+        poison: 0,
 
         add_attack: 0,
         add_damage: 0,
@@ -509,6 +583,8 @@ function room() {
 
         dbf_slow:0,
         dbf_fire: 0,
+        dbf_poison: 0,
+        dbf_poison_t: 0,
 
         egz:0,
 
@@ -534,17 +610,22 @@ function room() {
 
         }
       }
-    data.hp = Math.max(data.hp,1);
-    data.atk = Math.max(data.atk,0);
-    data.def = Math.max(data.def,0);
-    data.spd = Math.max(data.spd,1);
-    data.luck = Math.max(data.luck, 0);
 
     data.atk *= data.satk;
     data.def *= data.sdef;
     data.spd *= data.sspd;
     data.hp *= data.shp;
     data.luck *= data.sluck;
+
+    data.hp = Math.max(data.hp,1);
+    data.atk = Math.max(data.atk,0);
+    data.def = Math.max(data.def,0);
+    data.spd = Math.max(data.spd,1);
+    data.luck = Math.max(data.luck, 0);
+
+    data.atk += 75;
+    data.def += 200;
+    data.spd += 50;
 
     if (data.egz >= 5) {
 
