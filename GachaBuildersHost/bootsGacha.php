@@ -5,18 +5,26 @@ require('Gacha.php');
 //データ準備
 //----------------------------
 $data = [[
-	['name'=>'約束された勝利の靴','HP'=>50,'ATK'=>0,'DEF'=>2,'SPD'=>24,'LUK'=>0,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/1.png'],
-	['name'=>'シークレットブーツ','HP'=>0,'ATK'=>0,'DEF'=>0,'SPD'=>24,'LUK'=>10,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
-	['name'=>'黄金のブーツ','HP'=>20,'ATK'=>0,'DEF'=>0,'SPD'=>10,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
-	['name'=>'ユーエヌケーオー(UR)','HP'=>30,'ATK'=>-30,'DEF'=>0,'SPD'=>25,'LUK'=>3,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
-	['name'=>'時をかけるシューズ','HP'=>-30,'ATK'=>0,'DEF'=>0,'SPD'=>26,'LUK'=>0,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'約束された勝利の靴','HP'=>50,'ATK'=>0,'DEF'=>2,'SPD'=>54,'LUK'=>0,'EFFECT'=>101,'img'=>'GachaBuildersHost/weaponimg/1.png'],
+	['name'=>'鶏王の足','HP'=>20,'ATK'=>0,'DEF'=>0,'SPD'=>100,'LUK'=>10,'EFFECT'=>104,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'黄金のブーツ','HP'=>50,'ATK'=>20,'DEF'=>20,'SPD'=>10,'LUK'=>1,'EFFECT'=>105,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'ユーエヌケーオー(UR)','HP'=>-50,'ATK'=>-10,'DEF'=>-10,'SPD'=>90,'LUK'=>3,'EFFECT'=>103,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'時をかけるシューズ','HP'=>0,'ATK'=>0,'DEF'=>0,'SPD'=>86,'LUK'=>0,'EFFECT'=>121,'img'=>'GachaBuildersHost/weaponimg/2.png'],
 ],
 [
-	['name'=>'瞬足','HP'=>0,'ATK'=>0,'DEF'=>0,'SPD'=>40,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/1.png'],
-	['name'=>'フェザーブーツ','HP'=>0,'ATK'=>10,'DEF'=>0,'SPD'=>30,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
-	['name'=>'純銀のブーツ','HP'=>0,'ATK'=>0,'DEF'=>30,'SPD'=>0,'LUK'=>0,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
-	['name'=>'幸せの靴','HP'=>0,'ATK'=>0,'DEF'=>0,'SPD'=>0,'LUK'=>10,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
-	['name'=>'よっちゃん３０円（税抜き）','HP'=>30,'ATK'=>30,'DEF'=>-30,'SPD'=>-30,'LUK'=>-30,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'瞬足','HP'=>0,'ATK'=>0,'DEF'=>0,'SPD'=>40,'LUK'=>1,'EFFECT'=>103,'img'=>'GachaBuildersHost/weaponimg/1.png'],
+	['name'=>'フェザーブーツ','HP'=>0,'ATK'=>10,'DEF'=>0,'SPD'=>30,'LUK'=>1,'EFFECT'=>122,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'純銀のブーツ','HP'=>0,'ATK'=>0,'DEF'=>20,'SPD'=>0,'LUK'=>0,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'幸せの靴','HP'=>0,'ATK'=>0,'DEF'=>0,'SPD'=>0,'LUK'=>20,'EFFECT'=>104,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'よっちゃん３０円（税抜き）','HP'=>-30,'ATK'=>-30,'DEF'=>-30,'SPD'=>-30,'LUK'=>-30,'EFFECT'=>123,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'石鹸靴','HP'=>30,'ATK'=>30,'DEF'=>-30,'SPD'=>-30,'LUK'=>-30,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'よく滑る石鹸靴','HP'=>-10,'ATK'=>0,'DEF'=>0,'SPD'=>30,'LUK'=>-0,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'ミラーシューズ','HP'=>30,'ATK'=>0,'DEF'=>0,'SPD'=>0,'LUK'=>0,'EFFECT'=>119,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'戦車のラジコン','HP'=>30,'ATK'=>0,'DEF'=>20,'SPD'=>0,'LUK'=>0,'EFFECT'=>117,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'エッチなタイツ','HP'=>0,'ATK'=>0,'DEF'=>-10,'SPD'=>0,'LUK'=>20,'EFFECT'=>120,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'攻撃的なハイヒール','HP'=>0,'ATK'=>22,'DEF'=>0,'SPD'=>0,'LUK'=>0,'EFFECT'=>101,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+	['name'=>'魅惑のハイサイブーツ','HP'=>0,'ATK'=>0,'DEF'=>0,'SPD'=>0,'LUK'=>0,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/2.png'],
+
 ],
 [
 	['name'=>'靴底','HP'=>10,'ATK'=>1,'DEF'=>0,'SPD'=>-5,'LUK'=>1,'EFFECT'=>0,'img'=>'GachaBuildersHost/weaponimg/1.png'],
